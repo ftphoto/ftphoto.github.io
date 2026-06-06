@@ -59,25 +59,17 @@
     text-transform: uppercase;
     color: #bbb;
   }
-  .location-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .location-link {
-    font-size: 11px;
-    color: #111;
-    text-decoration: none;
+  .location-select {
+    font-size: 12px;
+    padding: 0.65rem 0.9rem;
     border: 1px solid #e8e8e8;
-    padding: 0.45rem 0.8rem;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
-    display: inline-flex;
-    align-items: center;
+    color: #111;
+    background: #fff;
+    border-radius: 0;
+    outline: none;
+    min-width: 170px;
   }
-  .location-link:hover,
-  .location-link.active {
-    background: #111;
-    color: #fff;
+  .location-select:focus {
     border-color: #111;
   }
 
@@ -225,8 +217,8 @@
 </nav>
 
 <div class="subnav">
-  <span class="subnav-label">view by location</span>
-  <nav class="location-nav" id="locationNav" aria-label="Photo locations"></nav>
+  <label class="subnav-label" for="locationSelect">view by location</label>
+  <select id="locationSelect" class="location-select" aria-label="Select photo location"></select>
 </div>
 
 <main class="gallery" id="gallery">
@@ -352,7 +344,7 @@
   function prev() { open((current - 1 + items.length) % items.length); }
   function next() { open((current + 1) % items.length); }
 
-  const locationNav = document.getElementById('locationNav');
+  const locationSelect = document.getElementById('locationSelect');
   const allLocationLabel = 'all';
   const locations = Array.from(new Set(items.map(item => getLocationLabel(item.dataset.location)))).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
@@ -386,45 +378,37 @@
     });
   }
 
-  function renderLocationNav() {
-    const allLink = document.createElement('a');
-    allLink.href = '#';
-    allLink.className = 'location-link';
-    allLink.dataset.location = allLocationLabel;
-    allLink.textContent = 'all';
-    allLink.addEventListener('click', handleLocationClick);
-    locationNav.appendChild(allLink);
+  function renderLocationSelect() {
+    locationSelect.innerHTML = '';
+    const allOption = document.createElement('option');
+    allOption.value = allLocationLabel;
+    allOption.textContent = 'all';
+    locationSelect.appendChild(allOption);
 
     locations.forEach(location => {
-      const link = document.createElement('a');
-      link.href = '#';
-      link.className = 'location-link';
-      link.dataset.location = location;
-      link.textContent = location;
-      link.addEventListener('click', handleLocationClick);
-      locationNav.appendChild(link);
+      const option = document.createElement('option');
+      option.value = location;
+      option.textContent = location;
+      locationSelect.appendChild(option);
     });
   }
 
-  function handleLocationClick(event) {
-    event.preventDefault();
-    const locationName = event.currentTarget.dataset.location;
-    setActiveLocation(locationName);
-  }
-
   function setActiveLocation(locationName) {
-    const links = Array.from(locationNav.querySelectorAll('.location-link'));
-    links.forEach(link => link.classList.toggle('active', link.dataset.location === locationName));
+    locationSelect.value = locationName;
     filterItems(locationName);
     updateHash(locationName);
   }
 
-  function initLocationNav() {
-    renderLocationNav();
+  function initLocationSelect() {
+    renderLocationSelect();
     const initial = getLocationFromHash();
     const available = initial === allLocationLabel || locations.includes(initial) ? initial : allLocationLabel;
     setActiveLocation(available);
   }
+
+  locationSelect.addEventListener('change', event => {
+    setActiveLocation(event.target.value);
+  });
 
   items.forEach((item, i) => item.addEventListener('click', () => open(i)));
   document.getElementById('lb-close').addEventListener('click', close);
@@ -445,7 +429,7 @@
     const available = locationName === allLocationLabel || locations.includes(locationName) ? locationName : allLocationLabel;
     setActiveLocation(available);
   });
-  initLocationNav();
+  initLocationSelect();
 </script>
 </body>
 </html>
