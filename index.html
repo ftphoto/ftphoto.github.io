@@ -21,19 +21,19 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: 1.6rem 2rem;
+    padding: 1.2rem 1.5rem;
     border-bottom: 1px solid #e8e8e8;
   }
   .nav-name {
     font-size: 13px;
-    font-weight: 400;
+    font-weight: 700;
     text-decoration: none;
     color: #111;
     letter-spacing: 0.01em;
   }
   .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     list-style: none;
   }
   .nav-links a {
@@ -50,13 +50,6 @@
     display: none;
   }
 
-  .nav-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-    position: relative;
-  }
-
   .nav-links li {
     position: relative;
   }
@@ -66,22 +59,28 @@
     top: 100%;
     left: 0;
     display: none;
-    min-width: 180px;
+    min-width: 160px;
     background: #fff;
     border: 1px solid #e8e8e8;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    padding: 0.4rem 0;
+    padding: 0.25rem 0;
     z-index: 100;
   }
 
-  .nav-links li:hover .dropdown,
-  .nav-links li:focus-within .dropdown {
+  .dropdown.open {
     display: block;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav-links li:hover .dropdown,
+    .nav-links li:focus-within .dropdown {
+      display: block;
+    }
   }
 
   .dropdown a {
     display: block;
-    padding: 0.65rem 1rem;
+    padding: 0.5rem 0.9rem;
     font-size: 12px;
     color: #111;
     text-decoration: none;
@@ -95,13 +94,12 @@
     color: #fff;
   }
 
-  .dropdown-label {
-    display: block;
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #bbb;
-    padding: 0 1rem 0.35rem;
+  .location-menu > a::after {
+    content: '▾';
+    display: inline-block;
+    margin-left: 0.35rem;
+    font-size: 0.8em;
+    vertical-align: middle;
   }
 
   /* GALLERY */
@@ -243,10 +241,8 @@
   <ul class="nav-links">
     <li><a href="./">home</a></li>
     <li class="location-menu">
-      <a href="./" aria-haspopup="true">locations</a>
-      <div class="dropdown" id="locationNav" aria-label="Photo locations">
-        <span class="dropdown-label">view by location</span>
-      </div>
+      <a href="#" aria-haspopup="true" aria-expanded="false">locations</a>
+      <div class="dropdown" id="locationNav" aria-label="Photo locations"></div>
     </li>
     <li><a href="about/">about me</a></li>
   </ul>
@@ -410,7 +406,7 @@
   }
 
   function renderLocationNav() {
-    locationNav.innerHTML = '<span class="dropdown-label">view by location</span>';
+    locationNav.innerHTML = '';
     const allLink = document.createElement('a');
     allLink.href = '#';
     allLink.dataset.location = allLocationLabel;
@@ -432,6 +428,16 @@
     event.preventDefault();
     const locationName = event.currentTarget.dataset.location;
     setActiveLocation(locationName);
+    closeLocationDropdown();
+  }
+
+  function closeLocationDropdown() {
+    locationNav.classList.remove('open');
+  }
+
+  function toggleLocationDropdown(event) {
+    event.preventDefault();
+    locationNav.classList.toggle('open');
   }
 
   function setActiveLocation(locationName) {
@@ -448,6 +454,16 @@
     setActiveLocation(available);
   }
 
+
+  const locationMenuButton = document.querySelector('.location-menu > a');
+  locationMenuButton.addEventListener('click', toggleLocationDropdown);
+
+  document.addEventListener('click', (e) => {
+    const locationMenu = document.querySelector('.location-menu');
+    if (!locationMenu.contains(e.target)) {
+      closeLocationDropdown();
+    }
+  });
 
   items.forEach((item, i) => item.addEventListener('click', () => open(i)));
   document.getElementById('lb-close').addEventListener('click', close);
