@@ -47,30 +47,61 @@
   .nav-links a.active { border-bottom: 1px solid #111; }
 
   .subnav {
-    padding: 0 2rem 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem;
+    display: none;
   }
-  .subnav-label {
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    position: relative;
+  }
+
+  .nav-links li {
+    position: relative;
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    padding: 0.4rem 0;
+    z-index: 100;
+  }
+
+  .nav-links li:hover .dropdown,
+  .nav-links li:focus-within .dropdown {
+    display: block;
+  }
+
+  .dropdown a {
+    display: block;
+    padding: 0.65rem 1rem;
+    font-size: 12px;
+    color: #111;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .dropdown a:hover,
+  .dropdown a.active {
+    background: #111;
+    color: #fff;
+  }
+
+  .dropdown-label {
+    display: block;
     font-size: 10px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: #bbb;
-  }
-  .location-select {
-    font-size: 12px;
-    padding: 0.65rem 0.9rem;
-    border: 1px solid #e8e8e8;
-    color: #111;
-    background: #fff;
-    border-radius: 0;
-    outline: none;
-    min-width: 170px;
-  }
-  .location-select:focus {
-    border-color: #111;
+    padding: 0 1rem 0.35rem;
   }
 
   /* GALLERY */
@@ -211,15 +242,15 @@
   <a class="nav-name" href="./">hannah holzer</a>
   <ul class="nav-links">
     <li><a href="./">home</a></li>
-    <li><a href="./" class="active">work</a></li>
+    <li class="location-menu">
+      <a href="./" aria-haspopup="true">locations</a>
+      <div class="dropdown" id="locationNav" aria-label="Photo locations">
+        <span class="dropdown-label">view by location</span>
+      </div>
+    </li>
     <li><a href="about/">about me</a></li>
   </ul>
 </nav>
-
-<div class="subnav">
-  <label class="subnav-label" for="locationSelect">view by location</label>
-  <select id="locationSelect" class="location-select" aria-label="Select photo location"></select>
-</div>
 
 <main class="gallery" id="gallery">
 
@@ -344,7 +375,7 @@
   function prev() { open((current - 1 + items.length) % items.length); }
   function next() { open((current + 1) % items.length); }
 
-  const locationSelect = document.getElementById('locationSelect');
+  const locationNav = document.getElementById('locationNav');
   const allLocationLabel = 'all';
   const locations = Array.from(new Set(items.map(item => getLocationLabel(item.dataset.location)))).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
@@ -378,37 +409,45 @@
     });
   }
 
-  function renderLocationSelect() {
-    locationSelect.innerHTML = '';
-    const allOption = document.createElement('option');
-    allOption.value = allLocationLabel;
-    allOption.textContent = 'all';
-    locationSelect.appendChild(allOption);
+  function renderLocationNav() {
+    locationNav.innerHTML = '<span class="dropdown-label">view by location</span>';
+    const allLink = document.createElement('a');
+    allLink.href = '#';
+    allLink.dataset.location = allLocationLabel;
+    allLink.textContent = 'all';
+    allLink.addEventListener('click', handleLocationClick);
+    locationNav.appendChild(allLink);
 
     locations.forEach(location => {
-      const option = document.createElement('option');
-      option.value = location;
-      option.textContent = location;
-      locationSelect.appendChild(option);
+      const link = document.createElement('a');
+      link.href = `#location=${encodeURIComponent(location)}`;
+      link.dataset.location = location;
+      link.textContent = location;
+      link.addEventListener('click', handleLocationClick);
+      locationNav.appendChild(link);
     });
   }
 
+  function handleLocationClick(event) {
+    event.preventDefault();
+    const locationName = event.currentTarget.dataset.location;
+    setActiveLocation(locationName);
+  }
+
   function setActiveLocation(locationName) {
-    locationSelect.value = locationName;
+    const links = Array.from(locationNav.querySelectorAll('a'));
+    links.forEach(link => link.classList.toggle('active', link.dataset.location === locationName));
     filterItems(locationName);
     updateHash(locationName);
   }
 
-  function initLocationSelect() {
-    renderLocationSelect();
+  function initLocationNav() {
+    renderLocationNav();
     const initial = getLocationFromHash();
     const available = initial === allLocationLabel || locations.includes(initial) ? initial : allLocationLabel;
     setActiveLocation(available);
   }
 
-  locationSelect.addEventListener('change', event => {
-    setActiveLocation(event.target.value);
-  });
 
   items.forEach((item, i) => item.addEventListener('click', () => open(i)));
   document.getElementById('lb-close').addEventListener('click', close);
@@ -429,7 +468,7 @@
     const available = locationName === allLocationLabel || locations.includes(locationName) ? locationName : allLocationLabel;
     setActiveLocation(available);
   });
-  initLocationSelect();
+  initLocationNav();
 </script>
 </body>
 </html>
