@@ -51,6 +51,58 @@
   .nav-links a:hover { opacity: 0.5; }
   .nav-links a.active { border-bottom: 1px solid #111; }
 
+  .nav-links li {
+    position: relative;
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+    min-width: 160px;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    padding: 0.25rem 0;
+    z-index: 100;
+  }
+
+  .dropdown.open {
+    display: block;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav-links li:hover .dropdown,
+    .nav-links li:focus-within .dropdown {
+      display: block;
+    }
+  }
+
+  .dropdown a {
+    display: block;
+    padding: 0.5rem 0.9rem;
+    font-size: 12px;
+    color: #111;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .dropdown a:hover,
+  .dropdown a.active {
+    background: #111;
+    color: #fff;
+  }
+
+  .location-menu > a::after {
+    content: '▾';
+    display: inline-block;
+    margin-left: 0.35rem;
+    font-size: 0.8em;
+    vertical-align: middle;
+  }
+
   /* ABOUT LAYOUT */
   .about {
     max-width: 900px;
@@ -234,7 +286,23 @@
   <a class="nav-name" href="../">hannah holzer</a>
   <ul class="nav-links">
     <li><a href="../">home</a></li>
-    <li><a href="../">locations</a></li>
+    <li class="location-menu">
+      <a href="#" aria-haspopup="true" aria-expanded="false">locations</a>
+      <div class="dropdown" id="locationNav" aria-label="Photo locations">
+        <a href="../" data-location="all">all</a>
+        <a href="../#location=Australia" data-location="Australia">Australia</a>
+        <a href="../#location=Austria" data-location="Austria">Austria</a>
+        <a href="../#location=Croatia" data-location="Croatia">Croatia</a>
+        <a href="../#location=Denmark" data-location="Denmark">Denmark</a>
+        <a href="../#location=Ireland" data-location="Ireland">Ireland</a>
+        <a href="../#location=Italy" data-location="Italy">Italy</a>
+        <a href="../#location=Montenegro" data-location="Montenegro">Montenegro</a>
+        <a href="../#location=New%20Zealand" data-location="New Zealand">New Zealand</a>
+        <a href="../#location=Northern%20Ireland" data-location="Northern Ireland">Northern Ireland</a>
+        <a href="../#location=Oregon" data-location="Oregon">Oregon</a>
+        <a href="../#location=Portugal" data-location="Portugal">Portugal</a>
+      </div>
+    </li>
     <li><a href="./" class="active">about me</a></li>
   </ul>
 </nav>
@@ -286,6 +354,31 @@
   <a href="mailto:fallingtidephoto@gmail.com">mail</a>
   <a href="https://www.instagram.com/fallingtidephoto/">instagram</a>
 </footer>
+
+<script>
+  const locationNav = document.getElementById('locationNav');
+  const locationMenuButton = document.querySelector('.location-menu > a');
+
+  function closeLocationDropdown() {
+    locationNav.classList.remove('open');
+    locationMenuButton.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleLocationDropdown(event) {
+    event.preventDefault();
+    const isOpen = locationNav.classList.toggle('open');
+    locationMenuButton.setAttribute('aria-expanded', String(isOpen));
+  }
+
+  locationMenuButton.addEventListener('click', toggleLocationDropdown);
+
+  document.addEventListener('click', (event) => {
+    const locationMenu = document.querySelector('.location-menu');
+    if (!locationMenu.contains(event.target)) {
+      closeLocationDropdown();
+    }
+  });
+</script>
 
 </body>
 </html>
