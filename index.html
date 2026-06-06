@@ -46,6 +46,41 @@
   .nav-links a:hover { opacity: 0.5; }
   .nav-links a.active { border-bottom: 1px solid #111; }
 
+  .subnav {
+    padding: 0 2rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .subnav-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #bbb;
+  }
+  .location-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .location-link {
+    font-size: 11px;
+    color: #111;
+    text-decoration: none;
+    border: 1px solid #e8e8e8;
+    padding: 0.45rem 0.8rem;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+  }
+  .location-link:hover,
+  .location-link.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+
   /* GALLERY */
   .gallery {
     max-width: 1100px;
@@ -181,13 +216,18 @@
 <body>
 
 <nav>
-  <a class="nav-name" href="#">hannah holzer</a>
+  <a class="nav-name" href="./">hannah holzer</a>
   <ul class="nav-links">
-    <li><a href="#">home</a></li>
-    <li><a href="#" class="active">work</a></li>
-    <li><a href="about.html">about me</a></li>
+    <li><a href="./">home</a></li>
+    <li><a href="./" class="active">work</a></li>
+    <li><a href="about/">about me</a></li>
   </ul>
 </nav>
+
+<div class="subnav">
+  <span class="subnav-label">view by location</span>
+  <nav class="location-nav" id="locationNav" aria-label="Photo locations"></nav>
+</div>
 
 <main class="gallery" id="gallery">
 
@@ -312,6 +352,80 @@
   function prev() { open((current - 1 + items.length) % items.length); }
   function next() { open((current + 1) % items.length); }
 
+  const locationNav = document.getElementById('locationNav');
+  const allLocationLabel = 'all';
+  const locations = Array.from(new Set(items.map(item => getLocationLabel(item.dataset.location)))).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+  function getLocationLabel(raw) {
+    const beforeDash = (raw || '').split('—')[0].trim();
+    if (!beforeDash) return '';
+    const commaIndex = beforeDash.lastIndexOf(',');
+    if (commaIndex !== -1) {
+      return beforeDash.slice(commaIndex + 1).trim();
+    }
+    const parts = beforeDash.split(/\s+/);
+    return parts.length > 1 ? parts[parts.length - 1] : beforeDash;
+  }
+
+  function getLocationFromHash() {
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    const match = hash.match(/^location=(.+)$/);
+    return match ? match[1] : allLocationLabel;
+  }
+
+  function updateHash(locationName) {
+    const hash = locationName && locationName !== allLocationLabel ? `location=${encodeURIComponent(locationName)}` : '';
+    history.replaceState(null, '', hash ? `#${hash}` : window.location.pathname + window.location.search);
+  }
+
+  function filterItems(locationName) {
+    const showAll = locationName === allLocationLabel;
+    items.forEach(item => {
+      const itemLocation = getLocationLabel(item.dataset.location);
+      item.style.display = showAll || itemLocation === locationName ? '' : 'none';
+    });
+  }
+
+  function renderLocationNav() {
+    const allLink = document.createElement('a');
+    allLink.href = '#';
+    allLink.className = 'location-link';
+    allLink.dataset.location = allLocationLabel;
+    allLink.textContent = 'all';
+    allLink.addEventListener('click', handleLocationClick);
+    locationNav.appendChild(allLink);
+
+    locations.forEach(location => {
+      const link = document.createElement('a');
+      link.href = '#';
+      link.className = 'location-link';
+      link.dataset.location = location;
+      link.textContent = location;
+      link.addEventListener('click', handleLocationClick);
+      locationNav.appendChild(link);
+    });
+  }
+
+  function handleLocationClick(event) {
+    event.preventDefault();
+    const locationName = event.currentTarget.dataset.location;
+    setActiveLocation(locationName);
+  }
+
+  function setActiveLocation(locationName) {
+    const links = Array.from(locationNav.querySelectorAll('.location-link'));
+    links.forEach(link => link.classList.toggle('active', link.dataset.location === locationName));
+    filterItems(locationName);
+    updateHash(locationName);
+  }
+
+  function initLocationNav() {
+    renderLocationNav();
+    const initial = getLocationFromHash();
+    const available = initial === allLocationLabel || locations.includes(initial) ? initial : allLocationLabel;
+    setActiveLocation(available);
+  }
+
   items.forEach((item, i) => item.addEventListener('click', () => open(i)));
   document.getElementById('lb-close').addEventListener('click', close);
   document.getElementById('lb-prev').addEventListener('click', prev);
@@ -325,6 +439,13 @@
     if (e.key === 'ArrowLeft') prev();
     if (e.key === 'ArrowRight') next();
   });
+
+  window.addEventListener('hashchange', () => {
+    const locationName = getLocationFromHash();
+    const available = locationName === allLocationLabel || locations.includes(locationName) ? locationName : allLocationLabel;
+    setActiveLocation(available);
+  });
+  initLocationNav();
 </script>
 </body>
 </html>
