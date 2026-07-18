@@ -1,0 +1,7 @@
+name = "fallingtide"
+pages_build_output_dir = "site"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "fallingtide-shop"
+database_id = "7bd9c481-8550-438b-9345-4c0fb21c3431"
