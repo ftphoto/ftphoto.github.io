@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hannah holzer – print</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #e8e8e8;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 99;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  .nav-name { font-size: 13px; font-weight: 700; text-decoration: none; color: #111; letter-spacing: 0.01em; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+  .nav-links a { font-size: 12px; color: #111; text-decoration: none; letter-spacing: 0.03em; transition: opacity 0.2s; }
+  .nav-links a:hover { opacity: 0.5; }
+  .nav-links a.active { border-bottom: 1px solid #111; }
+
+  .product {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 3.5rem;
+  }
+
+  /* Frame mockup — same real-proportion approach as shop.html:
+     0.5in trim + 2in mat + a 12x18 photo, framed 17x23.
+     Orientation flips the whole thing: landscape photos get a 23x17
+     frame instead. Because CSS padding % is always relative to the
+     box's WIDTH, portrait and landscape need different percentages to
+     represent the same physical inches — both are computed below and
+     swapped by JS once the photo's real aspect ratio is known. */
+  .frame-stage {
+    background: #f5f5f3;
+    padding: 3rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .frame-outer {
+    width: 68%;
+    box-shadow: 0 30px 55px rgba(0, 0, 0, 0.16);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .frame-outer.orient-portrait  { aspect-ratio: 17 / 23; padding: 2.941%; }
+  .frame-outer.orient-landscape { aspect-ratio: 23 / 17; padding: 2.174%; width: 90%; }
+  .frame-outer.black { background: #171717; }
+  .frame-outer.white { background: #fff; border: 1px solid #dcdcdc; }
+  .frame-mat { width: 100%; height: 100%; background: #fff; }
+  .frame-outer.orient-portrait .frame-mat  { padding: 11.765%; }
+  .frame-outer.orient-landscape .frame-mat { padding: 8.696%; }
+  .frame-window { width: 100%; height: 100%; overflow: hidden; }
+  .frame-window img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .frame-dims {
+    text-align: center;
+    font-size: 10px;
+    color: #aaa;
+    font-style: italic;
+    margin-top: 0.9rem;
+  }
+
+  .product-name { font-size: 18px; font-weight: 700; letter-spacing: 0.01em; margin-bottom: 0.3rem; }
+  .product-location { font-size: 12px; color: #888; font-style: italic; margin-bottom: 1.6rem; }
+  .product-description { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 2rem; }
+
+  .section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+    margin-bottom: 0.7rem;
+  }
+
+  /* Frame color choice */
+  .color-options { display: flex; gap: 0.6rem; margin-bottom: 1.6rem; }
+  .color-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #e8e8e8;
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+    font-size: 12px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .color-option:hover { border-color: #ccc; }
+  .color-option.selected { border-color: #111; background: #fafafa; }
+  .color-option.disabled { opacity: 0.4; cursor: not-allowed; }
+  .swatch { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .swatch.black { background: #171717; }
+  .swatch.white { background: #fff; border: 1px solid #ccc; }
+
+  .qty-row { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.8rem; }
+  .qty-row select {
+    font-family: inherit; font-size: 12px; font-weight: 300;
+    padding: 0.4rem 0.6rem; border: 1px solid #e8e8e8; background: #fff; color: #111;
+  }
+
+  .price-line { font-size: 16px; font-weight: 700; margin-bottom: 1.8rem; }
+  .price-line .unit-note { font-size: 11px; color: #888; font-weight: 300; margin-left: 0.4rem; }
+
+  .buyer-form { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.8rem; }
+  .buyer-form input {
+    font-family: inherit; font-size: 12px; font-weight: 300;
+    padding: 0.6rem 0.7rem; border: 1px solid #e8e8e8; background: #fff; color: #111;
+  }
+  .buyer-form input:focus { outline: none; border-color: #111; }
+  .form-row { display: flex; gap: 0.6rem; }
+  .form-row input { flex: 1; min-width: 0; }
+
+  .pay-tabs { display: flex; gap: 0; margin-bottom: 1.2rem; border-bottom: 1px solid #e8e8e8; }
+  .pay-tab {
+    flex: 1; text-align: center; font-size: 11px; letter-spacing: 0.05em;
+    padding: 0.6rem 0; cursor: pointer; color: #888;
+    border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s;
+  }
+  .pay-tab.active { color: #111; border-color: #111; }
+
+  .pay-panel { display: none; }
+  .pay-panel.active { display: block; }
+
+  #square-card-container { border: 1px solid #e8e8e8; padding: 0.8rem; margin-bottom: 0.8rem; min-height: 44px; }
+  #square-pay-btn {
+    width: 100%; background: #111; color: #fff; border: none; padding: 0.75rem;
+    font-family: inherit; font-size: 12px; letter-spacing: 0.04em; cursor: pointer; transition: opacity 0.2s;
+  }
+  #square-pay-btn:hover { opacity: 0.85; }
+  #square-pay-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .status-message { font-size: 11px; margin-top: 0.8rem; letter-spacing: 0.02em; }
+  .status-message.error { color: #b33; }
+  .status-message.success { color: #2a7a2a; }
+
+  .sold-out-banner {
+    font-size: 12px; color: #b33; border: 1px solid #f0d0d0; background: #fff8f8;
+    padding: 0.8rem; margin-bottom: 1.5rem;
+  }
+
+  footer {
+    border-top: 1px solid #e8e8e8; padding: 1.4rem 2rem; display: flex; gap: 1.5rem;
+    font-size: 11px; color: #888;
+  }
+  footer a { color: #888; text-decoration: none; }
+
+  @media (max-width: 760px) {
+    .product { grid-template-columns: 1fr; gap: 2rem; }
+    .frame-outer { width: 55%; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-name" href="./">hannah holzer</a>
+  <ul class="nav-links">
+    <li><a href="./">home</a></li>
+    <li><a href="shop.html" class="active">shop</a></li>
+  </ul>
+</nav>
+
+<main class="product" id="product-root">
+  <div>
+    <div class="frame-stage">
+      <div class="frame-outer black orient-portrait" id="frame-outer">
+        <div class="frame-mat">
+          <div class="frame-window">
+            <img id="pd-image" src="" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="frame-dims" id="frame-dims">framed 17&Prime; × 23&Prime; — 12&Prime; × 18&Prime; photo, 2&Prime; mat</div>
+  </div>
+
+  <div class="product-details">
+    <div class="product-name" id="pd-name"></div>
+    <div class="product-location" id="pd-location"></div>
+    <div class="product-description" id="pd-description"></div>
+
+    <div id="sold-out-banner" class="sold-out-banner" style="display:none;">
+      This print is currently sold out. Check back soon or email fallingtidephoto@gmail.com.
+    </div>
+
+    <div id="purchase-block">
+      <div class="section-label">frame color</div>
+      <div class="color-options" id="color-options"></div>
+
+      <div class="section-label">quantity</div>
+      <div class="qty-row">
+        <select id="qty-select">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </div>
+
+      <div class="price-line" id="price-line"></div>
+
+      <div class="section-label">shipping details</div>
+      <div class="buyer-form">
+        <input type="text" id="buyer-name" placeholder="full name" autocomplete="name">
+        <input type="email" id="buyer-email" placeholder="email" autocomplete="email">
+        <input type="text" id="buyer-address1" placeholder="address" autocomplete="address-line1">
+        <div class="form-row">
+          <input type="text" id="buyer-city" placeholder="city" autocomplete="address-level2">
+          <input type="text" id="buyer-state" placeholder="state" autocomplete="address-level1">
+          <input type="text" id="buyer-zip" placeholder="zip" autocomplete="postal-code">
+        </div>
+      </div>
+
+      <div class="section-label">payment</div>
+      <div class="pay-tabs">
+        <div class="pay-tab active" data-tab="paypal">paypal</div>
+        <div class="pay-tab" data-tab="square">card</div>
+      </div>
+
+      <div class="pay-panel active" id="panel-paypal">
+        <div id="paypal-button-container"></div>
+      </div>
+
+      <div class="pay-panel" id="panel-square">
+        <div id="square-card-container"></div>
+        <button id="square-pay-btn">pay</button>
+      </div>
+
+      <div class="status-message" id="status-message"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <a href="mailto:fallingtidephoto@gmail.com">mail</a>
+  <a href="https://www.instagram.com/fallingtidephoto/">instagram</a>
+</footer>
+
+<!--
+  Replace YOUR_PAYPAL_CLIENT_ID and YOUR_SQUARE_APP_ID / YOUR_SQUARE_LOCATION_ID
+  below with your real public IDs (safe to expose in the browser — not secrets).
+  See README.md for where to get them.
+-->
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+<script src="https://web.squarecdn.com/v1/square.js"></script>
+
+<script>
+  const SQUARE_APP_ID = 'YOUR_SQUARE_APP_ID';
+  const SQUARE_LOCATION_ID = 'YOUR_SQUARE_LOCATION_ID';
+
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get('id');
+
+  let product = null;
+  let selectedVariant = null;
+  let squareCard = null;
+
+  function money(cents) { return '$' + (cents / 100).toFixed(2); }
+  function qty() { return parseInt(document.getElementById('qty-select').value, 10); }
+
+  function setStatus(message, type) {
+    const el = document.getElementById('status-message');
+    el.textContent = message;
+    el.className = 'status-message' + (type ? ' ' + type : '');
+  }
+
+  function getBuyer() {
+    return {
+      name: document.getElementById('buyer-name').value.trim(),
+      email: document.getElementById('buyer-email').value.trim(),
+      address: {
+        line1: document.getElementById('buyer-address1').value.trim(),
+        city: document.getElementById('buyer-city').value.trim(),
+        state: document.getElementById('buyer-state').value.trim(),
+        zip: document.getElementById('buyer-zip').value.trim(),
+      },
+    };
+  }
+
+  function validateBuyer() {
+    const b = getBuyer();
+    if (!b.name || !b.email || !b.address.line1 || !b.address.city || !b.address.state || !b.address.zip) {
+      setStatus('please fill in your name, email, and shipping address before paying.', 'error');
+      return false;
+    }
+    return true;
+  }
+
+  function updatePriceLine() {
+    if (!selectedVariant) return;
+    const total = selectedVariant.price_cents * qty();
+    document.getElementById('price-line').innerHTML =
+      money(total) + (qty() > 1 ? `<span class="unit-note">(${money(selectedVariant.price_cents)} each)</span>` : '');
+  }
+
+  function selectVariant(variant, el) {
+    selectedVariant = variant;
+    document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    const frameOuter = document.getElementById('frame-outer');
+    frameOuter.classList.remove('black', 'white');
+    frameOuter.classList.add(variant.frame_color);
+    updatePriceLine();
+  }
+
+  // Detects the photo's real aspect ratio once it loads and flips the
+  // frame between portrait (17x23) and landscape (23x17) to match —
+  // trim and mat stay physically 0.5in / 2in either way.
+  function applyOrientation() {
+    const img = document.getElementById('pd-image');
+    const frameOuter = document.getElementById('frame-outer');
+    const dims = document.getElementById('frame-dims');
+
+    function decide() {
+      const isLandscape = img.naturalWidth > img.naturalHeight;
+      frameOuter.classList.toggle('orient-landscape', isLandscape);
+      frameOuter.classList.toggle('orient-portrait', !isLandscape);
+      dims.textContent = isLandscape
+        ? 'framed 23\u2033 × 17\u2033 — 18\u2033 × 12\u2033 photo, 2\u2033 mat'
+        : 'framed 17\u2033 × 23\u2033 — 12\u2033 × 18\u2033 photo, 2\u2033 mat';
+    }
+
+    if (img.complete && img.naturalWidth) decide();
+    else img.addEventListener('load', decide);
+  }
+
+  function renderColorOptions() {
+    const container = document.getElementById('color-options');
+    container.innerHTML = '';
+    product.variants.forEach(v => {
+      const soldOut = v.stock_qty <= 0;
+      const el = document.createElement('div');
+      el.className = 'color-option' + (soldOut ? ' disabled' : '');
+      el.innerHTML = `<span class="swatch ${v.frame_color}"></span><span>${v.frame_color}${soldOut ? ' — sold out' : ''}</span>`;
+      if (!soldOut) {
+        el.addEventListener('click', () => selectVariant(v, el));
+        if (!selectedVariant) selectVariant(v, el); // auto-select first available
+      }
+      container.appendChild(el);
+    });
+  }
+
+  async function loadProduct() {
+    if (!productId) {
+      setStatus('no product specified.', 'error');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/products/${encodeURIComponent(productId)}`);
+      if (!res.ok) throw new Error('not found');
+      product = await res.json();
+
+      document.getElementById('pd-image').src = product.image;
+      document.getElementById('pd-image').alt = product.name;
+      applyOrientation();
+      document.getElementById('pd-location').textContent = product.location;
+      document.getElementById('pd-name').textContent = product.name;
+      document.getElementById('pd-description').textContent = product.description || '';
+      document.title = `hannah holzer – ${product.name}`;
+
+      const anyInStock = product.variants.some(v => v.stock_qty > 0);
+      if (!anyInStock) {
+        document.getElementById('sold-out-banner').style.display = 'block';
+        document.getElementById('purchase-block').style.display = 'none';
+        return;
+      }
+
+      renderColorOptions();
+      updatePriceLine();
+      initPaypal();
+      initSquare();
+    } catch (err) {
+      setStatus('could not load this print.', 'error');
+    }
+  }
+
+  document.getElementById('qty-select').addEventListener('change', updatePriceLine);
+
+  document.querySelectorAll('.pay-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.pay-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ---- PayPal ----
+  function initPaypal() {
+    if (!window.paypal) return;
+    paypal.Buttons({
+      style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'paypal' },
+      createOrder: async () => {
+        if (!validateBuyer()) throw new Error('validation');
+        const res = await fetch('/api/paypal/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ variantId: selectedVariant.id, qty: qty() }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'could not start checkout');
+        return data.id;
+      },
+      onApprove: async (data) => {
+        setStatus('confirming payment…');
+        const res = await fetch('/api/paypal/capture-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: data.orderID,
+            variantId: selectedVariant.id,
+            qty: qty(),
+            buyer: getBuyer(),
+          }),
+        });
+        const result = await res.json();
+        if (!res.ok) { setStatus(result.error || 'payment could not be completed.', 'error'); return; }
+        setStatus('thank you — your order is confirmed! a receipt is on its way to your email.', 'success');
+        document.getElementById('purchase-block').querySelectorAll('input,select,button').forEach(el => el.disabled = true);
+      },
+      onError: () => setStatus('something went wrong with paypal checkout. please try again.', 'error'),
+    }).render('#paypal-button-container');
+  }
+
+  // ---- Square ----
+  async function initSquare() {
+    if (!window.Square) return;
+    try {
+      const payments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
+      squareCard = await payments.card();
+      await squareCard.attach('#square-card-container');
+    } catch (err) {
+      document.getElementById('square-card-container').textContent = 'card payment unavailable right now.';
+    }
+  }
+
+  document.getElementById('square-pay-btn').addEventListener('click', async () => {
+    if (!squareCard) return;
+    if (!validateBuyer()) return;
+    const btn = document.getElementById('square-pay-btn');
+    btn.disabled = true;
+    setStatus('processing payment…');
+    try {
+      const result = await squareCard.tokenize();
+      if (result.status !== 'OK') {
+        setStatus('card details could not be verified. please check and try again.', 'error');
+        btn.disabled = false;
+        return;
+      }
+      const res = await fetch('/api/square/pay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sourceId: result.token,
+          variantId: selectedVariant.id,
+          qty: qty(),
+          buyer: getBuyer(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setStatus(data.error || 'payment could not be completed.', 'error'); btn.disabled = false; return; }
+      setStatus('thank you — your order is confirmed! a receipt is on its way to your email.', 'success');
+      document.getElementById('purchase-block').querySelectorAll('input,select,button').forEach(el => el.disabled = true);
+    } catch (err) {
+      setStatus('something went wrong. please try again.', 'error');
+      btn.disabled = false;
+    }
+  });
+
+  loadProduct();
+</script>
+</body>
+</html>
