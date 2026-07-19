@@ -260,7 +260,7 @@
   below with your real public IDs (safe to expose in the browser — not secrets).
   See README.md for where to get them.
 -->
-<script src="https://www.paypal.com/sdk/js?client-id=AXV81lvJC5sW_wt2dVfJi7S9AfYdeJBpn3JSb-SBT4K-hMRipdzxw7LUKXe-4UpaI8fTnGJJlkNm6mgl&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
 <script src="https://web.squarecdn.com/v1/square.js"></script>
 
 <script>
@@ -405,12 +405,15 @@
   });
 
   // ---- PayPal ----
+  let paypalValidationFailed = false;
+
   function initPaypal() {
     if (!window.paypal) return;
     paypal.Buttons({
       style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'paypal' },
       createOrder: async () => {
-        if (!validateBuyer()) throw new Error('validation');
+        if (!validateBuyer()) { paypalValidationFailed = true; throw new Error('validation'); }
+        paypalValidationFailed = false;
         const res = await fetch('/api/paypal/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -437,7 +440,12 @@
         setStatus('thank you — your order is confirmed! a receipt is on its way to your email.', 'success');
         document.getElementById('purchase-block').querySelectorAll('input,select,button').forEach(el => el.disabled = true);
       },
-      onError: () => setStatus('something went wrong with paypal checkout. please try again.', 'error'),
+      onError: () => {
+        // If this fired because our own shipping-form validation failed,
+        // that message is already showing — don't stomp it with a generic one.
+        if (paypalValidationFailed) { paypalValidationFailed = false; return; }
+        setStatus('something went wrong with paypal checkout. please try again.', 'error');
+      },
     }).render('#paypal-button-container');
   }
 
