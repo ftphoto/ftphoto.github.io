@@ -122,6 +122,30 @@
 
   .paypal-note { font-size: 11px; color: #888; margin-top: 0.6rem; font-style: italic; }
 
+  /* Confirmation screen */
+  .confirm-check {
+    width: 34px; height: 34px; border-radius: 50%; background: #111; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; margin-bottom: 1.1rem;
+  }
+  .confirm-title { font-size: 16px; font-weight: 700; margin-bottom: 1.2rem; }
+  .confirm-summary {
+    border-top: 1px solid #e8e8e8; border-bottom: 1px solid #e8e8e8;
+    padding: 1rem 0; margin-bottom: 0.9rem;
+  }
+  .confirm-summary .row {
+    display: flex; justify-content: space-between; font-size: 12px; padding: 0.25rem 0;
+  }
+  .confirm-summary .row .label { color: #888; }
+  .confirm-summary .row.total { font-weight: 700; margin-top: 0.4rem; }
+  .confirm-ref { font-size: 11px; color: #aaa; margin-bottom: 1.6rem; letter-spacing: 0.02em; }
+  .confirm-next p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 0.7rem; }
+  .confirm-shop-link {
+    display: inline-block; margin-top: 1rem; font-size: 12px; color: #111;
+    text-decoration: none; border-bottom: 1px solid #111; padding-bottom: 1px;
+  }
+  .confirm-shop-link:hover { opacity: 0.6; }
+
   .buyer-form { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.8rem; }
   .buyer-form input {
     font-family: inherit; font-size: 12px; font-weight: 300;
@@ -233,6 +257,18 @@
 
       <div class="status-message" id="status-message"></div>
     </div>
+
+    <div id="confirmation-view" style="display:none;">
+      <div class="confirm-check">&#10003;</div>
+      <div class="confirm-title">Order confirmed</div>
+      <div class="confirm-summary" id="confirm-summary"></div>
+      <div class="confirm-ref" id="confirm-ref"></div>
+      <div class="confirm-next">
+        <p>PayPal has emailed you a receipt, and your shipping address was sent along with the order.</p>
+        <p>Prints ship within 5–7 business days. Questions? Email <a href="mailto:fallingtidephoto@gmail.com">fallingtidephoto@gmail.com</a>.</p>
+      </div>
+      <a href="shop.html" class="confirm-shop-link">continue shopping &rarr;</a>
+    </div>
   </div>
 </main>
 
@@ -276,6 +312,19 @@
     const total = selectedVariant.price_cents * qty();
     document.getElementById('price-line').innerHTML =
       money(total) + (qty() > 1 ? `<span class="unit-note">(${money(selectedVariant.price_cents)} each)</span>` : '');
+  }
+
+  function showConfirmation(orderRef) {
+    const total = selectedVariant.price_cents * qty();
+    document.getElementById('confirm-summary').innerHTML = `
+      <div class="row"><span>${product.name}</span><span>${qty()} × ${money(selectedVariant.price_cents)}</span></div>
+      <div class="row"><span class="label">location</span><span>${product.location}</span></div>
+      <div class="row"><span class="label">frame</span><span>${selectedVariant.frame_color}</span></div>
+      <div class="row total"><span>total</span><span>${money(total)}</span></div>
+    `;
+    document.getElementById('confirm-ref').textContent = orderRef ? `order ref: ${orderRef}` : '';
+    document.getElementById('purchase-block').style.display = 'none';
+    document.getElementById('confirmation-view').style.display = 'block';
   }
 
   function selectVariant(variant, el) {
@@ -391,8 +440,7 @@
         });
         const result = await res.json();
         if (!res.ok) { setStatus(result.error || 'payment could not be completed.', 'error'); return; }
-        setStatus('thank you — your order is confirmed! a receipt is on its way to your email.', 'success');
-        document.getElementById('purchase-block').querySelectorAll('input,select,button').forEach(el => el.disabled = true);
+        showConfirmation(data.orderID);
       },
       onError: () => setStatus('something went wrong with paypal checkout. please try again.', 'error'),
     }).render('#paypal-button-container');
@@ -434,8 +482,7 @@
       });
       const data = await res.json();
       if (!res.ok) { setStatus(data.error || 'payment could not be completed.', 'error'); btn.disabled = false; return; }
-      setStatus('thank you — your order is confirmed! a receipt is on its way to your email.', 'success');
-      document.getElementById('purchase-block').querySelectorAll('input,select,button').forEach(el => el.disabled = true);
+      showConfirmation(null);
     } catch (err) {
       setStatus('something went wrong. please try again.', 'error');
       btn.disabled = false;
