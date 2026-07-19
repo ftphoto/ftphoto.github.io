@@ -11,7 +11,7 @@ import { paypalBase, getPaypalAccessToken } from "./_paypal.js";
 
 export async function onRequestPost({ request, env }) {
   try {
-    const { orderId, variantId, qty, buyer } = await request.json();
+    const { orderId, variantId, qty } = await request.json();
     if (!orderId || !variantId || !qty) return badRequest("Missing order details");
 
     const variant = await getVariant(env.DB, variantId);
@@ -36,6 +36,19 @@ export async function onRequestPost({ request, env }) {
       return serverError("PayPal payment was not completed");
     }
 
+    // Buyer name, email, and shipping address come straight from PayPal's
+    // own response — never from the browser — since PayPal collected them
+    // during their checkout flow (GET_FROM_FILE shipping preference).
+    const payer = capture?.payer || {};
+    const buyerName = payer.name
+      ? `${payer.name.given_name || ""} ${payer.name.surname || ""}`.trim()
+      : null;
+    const buyerEmail = payer.email_address || null;
+    const shipping = capture?.purchase_units?.[0]?.shipping;
+    const shippingAddress = shipping
+      ? { recipient: shipping.name?.full_name, ...shipping.address }
+      : null;
+
     // Only decrement stock AFTER payment is confirmed successful.
     const reserved = await decrementStock(env.DB, variantId, qty);
 
@@ -43,9 +56,9 @@ export async function onRequestPost({ request, env }) {
       id: newId("order"),
       variantId,
       qty,
-      buyerName: buyer?.name,
-      buyerEmail: buyer?.email,
-      shippingAddress: buyer?.address,
+      buyerName,
+      buyerEmail,
+      shippingAddress,
       provider: "paypal",
       paymentRef: orderId,
       amountCents: variant.price_cents * qty,

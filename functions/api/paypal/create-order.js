@@ -28,6 +28,10 @@ export async function onRequestPost({ request, env }) {
             amount: { currency_code: "USD", value: amount },
           },
         ],
+        // Have PayPal collect the shipping address as part of its own
+        // checkout flow — buyer picks/enters it there, we don't need our
+        // own address form.
+        application_context: { shipping_preference: "GET_FROM_FILE" },
       }),
     });
 
