@@ -5,3 +5,9 @@ pages_build_output_dir = "."
 binding = "DB"
 database_name = "fallingtide-shop"
 database_id = "7bd9c481-8550-438b-9345-4c0fb21c3431"
+
+[vars]
+PAYPAL_CLIENT_ID = "AXV81lvJC5sW_wt2dVfJi7S9AfYdeJBpn3JSb-SBT4K-hMRipdzxw7LUKXe-4UpaI8fTnGJJlkNm6mgl"
+PAYPAL_ENV = "sandbox"
+SQUARE_LOCATION_ID = "your-real-square-location-id"
+SQUARE_ENV = "sandbox"
