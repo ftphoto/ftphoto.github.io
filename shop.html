@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hannah holzer – shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #e8e8e8;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 99;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  .nav-name { font-size: 13px; font-weight: 700; text-decoration: none; color: #111; letter-spacing: 0.01em; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+  .nav-links a { font-size: 12px; color: #111; text-decoration: none; letter-spacing: 0.03em; transition: opacity 0.2s; }
+  .nav-links a:hover { opacity: 0.5; }
+  .nav-links a.active { border-bottom: 1px solid #111; }
+
+  /* Section header — eyebrow label + link, echoing the reference layout */
+  .shop-header {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .shop-header .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .shop-header .sub {
+    font-size: 11px;
+    color: #888;
+    font-style: italic;
+    margin-top: 0.35rem;
+  }
+
+  .product-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 5rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: #fff;
+  }
+
+  .product-card { display: block; text-decoration: none; color: #111; }
+
+  /* Frame mockup — built to real proportions: 17x23 overall, 0.5in trim,
+     2in mat, 12x18 photo. Padding percentages are expressed as a fraction
+     of the card's WIDTH (how CSS % padding always resolves) so the same
+     percentage produces correct inches in both axes. */
+  /* Frame mockup — built to real proportions: 17x23 (portrait) or 23x17
+     (landscape) overall, 0.5in trim, 2in mat, 12x18 (or 18x12) photo.
+     Padding percentages are relative to the box's WIDTH, so portrait and
+     landscape use different % values to represent the same physical
+     inches — orientation is detected per-photo and applied by JS. */
+  .frame-card {
+    background: #f5f5f3;
+    padding: 2.4rem 1.6rem 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1.05;
+  }
+  .frame-outer {
+    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.14);
+  }
+  .frame-outer.orient-portrait  { width: 58%; aspect-ratio: 17 / 23; padding: 2.941%; }
+  .frame-outer.orient-landscape { width: 78%; aspect-ratio: 23 / 17; padding: 2.174%; }
+  .frame-outer.black { background: #171717; }
+  .frame-outer.white { background: #fff; border: 1px solid #dcdcdc; }
+  .frame-mat { width: 100%; height: 100%; background: #fff; }
+  .frame-outer.orient-portrait .frame-mat  { padding: 11.765%; }
+  .frame-outer.orient-landscape .frame-mat { padding: 8.696%; }
+  .frame-window { width: 100%; height: 100%; overflow: hidden; }
+  .frame-window img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .product-card:hover .frame-outer { box-shadow: 0 26px 46px rgba(0, 0, 0, 0.18); }
+
+  .product-info { padding: 1rem 0.6rem 1.6rem; }
+  .product-name { font-size: 13px; font-weight: 700; letter-spacing: 0.01em; }
+  .product-location { font-size: 11px; color: #888; font-style: italic; margin-top: 0.25rem; }
+  .product-price { font-size: 12px; margin-top: 0.5rem; }
+
+  .state-message {
+    grid-column: 1 / -1;
+    padding: 3rem 0;
+    font-size: 12px;
+    color: #888;
+    font-style: italic;
+  }
+
+  footer {
+    border-top: 1px solid #e8e8e8;
+    padding: 1.4rem 2rem;
+    display: flex;
+    gap: 1.5rem;
+    font-size: 11px;
+    color: #888;
+  }
+  footer a { color: #888; text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: #111; }
+
+  @media (max-width: 900px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-name" href="./">hannah holzer</a>
+  <ul class="nav-links">
+    <li><a href="../../index.html">home</a></li>
+    <li><a href="site/shop.html" class="active">shop</a></li>
+  </ul>
+</nav>
+
+<div class="shop-header">
+  <div>
+    <div class="eyebrow">prints</div>
+    <div class="sub">archival fine art prints, framed and matted, made to order</div>
+  </div>
+</div>
+
+<main class="product-grid" id="product-grid">
+  <div class="state-message">loading prints…</div>
+</main>
+
+<footer>
+  <a href="mailto:fallingtidephoto@gmail.com">mail</a>
+  <a href="https://www.instagram.com/fallingtidephoto/">instagram</a>
+</footer>
+
+<script>
+  function formatPrice(cents) {
+    return '$' + (cents / 100).toFixed(0);
+  }
+
+  async function loadProducts() {
+    const grid = document.getElementById('product-grid');
+    try {
+      const res = await fetch('/api/products');
+      if (!res.ok) throw new Error('Request failed');
+      const { products } = await res.json();
+
+      if (!products.length) {
+        grid.innerHTML = '<div class="state-message">no prints available right now.</div>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      products.forEach(p => {
+        const inStock = p.variants.filter(v => v.stock_qty > 0);
+        const soldOut = inStock.length === 0;
+        // Prefer showing the black frame as the default thumbnail if in stock.
+        const thumbVariant = inStock.find(v => v.frame_color === 'black') || inStock[0] || p.variants[0];
+        const price = thumbVariant ? formatPrice(thumbVariant.price_cents) : '';
+
+        const a = document.createElement('a');
+        a.className = 'product-card';
+        a.href = `product.html?id=${encodeURIComponent(p.id)}`;
+        a.innerHTML = `
+          <div class="frame-card">
+            <div class="frame-outer ${thumbVariant ? thumbVariant.frame_color : 'black'} orient-portrait">
+              <div class="frame-mat">
+                <div class="frame-window">
+                  <img src="${p.image}" alt="${p.name}" loading="lazy">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-name">${p.name}</div>
+            <div class="product-location">${p.location}</div>
+            <div class="product-price">${soldOut ? 'sold out' : price}</div>
+          </div>
+        `;
+        grid.appendChild(a);
+
+        // Detect this photo's real aspect ratio and flip the frame to match.
+        const cardImg = a.querySelector('.frame-window img');
+        const cardFrame = a.querySelector('.frame-outer');
+        const setOrientation = () => {
+          const isLandscape = cardImg.naturalWidth > cardImg.naturalHeight;
+          cardFrame.classList.toggle('orient-landscape', isLandscape);
+          cardFrame.classList.toggle('orient-portrait', !isLandscape);
+        };
+        if (cardImg.complete && cardImg.naturalWidth) setOrientation();
+        else cardImg.addEventListener('load', setOrientation);
+      });
+    } catch (err) {
+      grid.innerHTML = '<div class="state-message">couldn\'t load prints. please try again shortly.</div>';
+    }
+  }
+
+  loadProducts();
+</script>
+</body>
+</html>

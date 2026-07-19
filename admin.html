@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hannah holzer – admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; color: #111; font-family: 'Inter', sans-serif; font-weight: 300; font-size: 13px; }
+
+  .wrap { max-width: 700px; margin: 0 auto; padding: 3rem 2rem; }
+  h1 { font-size: 15px; font-weight: 400; margin-bottom: 1.5rem; }
+
+  #login-view { max-width: 320px; }
+  #login-view input {
+    width: 100%; font-family: inherit; font-size: 12px; font-weight: 300;
+    padding: 0.7rem; border: 1px solid #e8e8e8; margin-bottom: 0.7rem;
+  }
+  #login-view button, .save-btn {
+    width: 100%; background: #111; color: #fff; border: none;
+    padding: 0.7rem; font-family: inherit; font-size: 12px; letter-spacing: 0.04em; cursor: pointer;
+  }
+  #login-view button:hover, .save-btn:hover { opacity: 0.85; }
+
+  #dashboard-view { display: none; }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  th, td { text-align: left; padding: 0.6rem 0.5rem; border-bottom: 1px solid #f0f0f0; font-size: 12px; }
+  th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; font-weight: 400; }
+  input.stock-input {
+    width: 60px; font-family: inherit; font-size: 12px; font-weight: 300;
+    padding: 0.35rem 0.5rem; border: 1px solid #e8e8e8;
+  }
+  .row-status { font-size: 10px; color: #2a7a2a; margin-left: 0.5rem; }
+  .error-message { font-size: 11px; color: #b33; margin-top: 0.7rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>stock admin</h1>
+
+  <div id="login-view">
+    <input type="password" id="password-input" placeholder="admin password">
+    <button id="login-btn">log in</button>
+    <div class="error-message" id="login-error"></div>
+  </div>
+
+  <div id="dashboard-view">
+    <table>
+      <thead>
+        <tr><th>print</th><th>frame</th><th>price</th><th>stock</th><th></th></tr>
+      </thead>
+      <tbody id="stock-rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  let adminToken = sessionStorage.getItem('ft_admin_token') || '';
+
+  function money(cents) { return '$' + (cents / 100).toFixed(2); }
+
+  async function login() {
+    const password = document.getElementById('password-input').value;
+    const errEl = document.getElementById('login-error');
+    errEl.textContent = '';
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      if (!res.ok) { errEl.textContent = 'incorrect password.'; return; }
+      adminToken = password;
+      sessionStorage.setItem('ft_admin_token', adminToken);
+      showDashboard();
+    } catch (err) {
+      errEl.textContent = 'could not log in — please try again.';
+    }
+  }
+
+  async function loadStock() {
+    const res = await fetch('/api/admin/stock', {
+      headers: { Authorization: 'Bearer ' + adminToken },
+    });
+    if (!res.ok) { sessionStorage.removeItem('ft_admin_token'); showLogin(); return; }
+    const { variants } = await res.json();
+
+    const tbody = document.getElementById('stock-rows');
+    tbody.innerHTML = '';
+    variants.forEach(v => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${v.name}</td>
+        <td>${v.frame_color}</td>
+        <td>${money(v.price_cents)}</td>
+        <td><input type="number" min="0" class="stock-input" value="${v.stock_qty}" data-id="${v.id}"></td>
+        <td><button class="save-btn" data-id="${v.id}" style="width:auto;padding:0.4rem 0.8rem;">save</button><span class="row-status" id="status-${v.id}"></span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('.save-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const input = tbody.querySelector(`input[data-id="${id}"]`);
+        const statusEl = document.getElementById('status-' + id);
+        statusEl.textContent = 'saving…';
+        statusEl.style.color = '#888';
+        try {
+          const res = await fetch('/api/admin/stock', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + adminToken },
+            body: JSON.stringify({ variantId: id, stockQty: parseInt(input.value, 10) }),
+          });
+          if (!res.ok) throw new Error();
+          statusEl.textContent = 'saved';
+          statusEl.style.color = '#2a7a2a';
+        } catch (err) {
+          statusEl.textContent = 'failed';
+          statusEl.style.color = '#b33';
+        }
+      });
+    });
+  }
+
+  function showDashboard() {
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('dashboard-view').style.display = 'block';
+    loadStock();
+  }
+
+  function showLogin() {
+    document.getElementById('login-view').style.display = 'block';
+    document.getElementById('dashboard-view').style.display = 'none';
+  }
+
+  document.getElementById('login-btn').addEventListener('click', login);
+  document.getElementById('password-input').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+  if (adminToken) { showDashboard(); } else { showLogin(); }
+</script>
+</body>
+</html>
