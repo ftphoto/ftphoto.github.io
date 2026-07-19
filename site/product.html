@@ -120,6 +120,32 @@
   .price-line { font-size: 16px; font-weight: 700; margin-bottom: 1.8rem; }
   .price-line .unit-note { font-size: 11px; color: #888; font-weight: 300; margin-left: 0.4rem; }
 
+  .paypal-note { font-size: 11px; color: #888; margin-top: 0.6rem; font-style: italic; }
+
+  /* Confirmation screen */
+  .confirm-check {
+    width: 34px; height: 34px; border-radius: 50%; background: #111; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; margin-bottom: 1.1rem;
+  }
+  .confirm-title { font-size: 16px; font-weight: 700; margin-bottom: 1.2rem; }
+  .confirm-summary {
+    border-top: 1px solid #e8e8e8; border-bottom: 1px solid #e8e8e8;
+    padding: 1rem 0; margin-bottom: 0.9rem;
+  }
+  .confirm-summary .row {
+    display: flex; justify-content: space-between; font-size: 12px; padding: 0.25rem 0;
+  }
+  .confirm-summary .row .label { color: #888; }
+  .confirm-summary .row.total { font-weight: 700; margin-top: 0.4rem; }
+  .confirm-ref { font-size: 11px; color: #aaa; margin-bottom: 1.6rem; letter-spacing: 0.02em; }
+  .confirm-next p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 0.7rem; }
+  .confirm-shop-link {
+    display: inline-block; margin-top: 1rem; font-size: 12px; color: #111;
+    text-decoration: none; border-bottom: 1px solid #111; padding-bottom: 1px;
+  }
+  .confirm-shop-link:hover { opacity: 0.6; }
+
   .buyer-form { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.8rem; }
   .buyer-form input {
     font-family: inherit; font-size: 12px; font-weight: 300;
@@ -218,34 +244,30 @@
 
       <div class="price-line" id="price-line"></div>
 
-      <div class="section-label">shipping details</div>
-      <div class="buyer-form">
-        <input type="text" id="buyer-name" placeholder="full name" autocomplete="name">
-        <input type="email" id="buyer-email" placeholder="email" autocomplete="email">
-        <input type="text" id="buyer-address1" placeholder="address" autocomplete="address-line1">
-        <div class="form-row">
-          <input type="text" id="buyer-city" placeholder="city" autocomplete="address-level2">
-          <input type="text" id="buyer-state" placeholder="state" autocomplete="address-level1">
-          <input type="text" id="buyer-zip" placeholder="zip" autocomplete="postal-code">
-        </div>
-      </div>
+      <div class="section-label">checkout</div>
+      <div id="paypal-button-container"></div>
+      <p class="paypal-note">You'll enter your shipping address on PayPal's secure checkout page.</p>
 
-      <div class="section-label">payment</div>
-      <div class="pay-tabs">
-        <div class="pay-tab active" data-tab="paypal">paypal</div>
-        <div class="pay-tab" data-tab="square">card</div>
-      </div>
-
-      <div class="pay-panel active" id="panel-paypal">
-        <div id="paypal-button-container"></div>
-      </div>
-
-      <div class="pay-panel" id="panel-square">
+      <!-- Square card checkout is built and ready — set ENABLE_SQUARE = true
+           below (and swap in your Square IDs) to turn it back on. -->
+      <div id="panel-square" style="display:none;">
         <div id="square-card-container"></div>
         <button id="square-pay-btn">pay</button>
       </div>
 
       <div class="status-message" id="status-message"></div>
+    </div>
+
+    <div id="confirmation-view" style="display:none;">
+      <div class="confirm-check">&#10003;</div>
+      <div class="confirm-title">Order confirmed</div>
+      <div class="confirm-summary" id="confirm-summary"></div>
+      <div class="confirm-ref" id="confirm-ref"></div>
+      <div class="confirm-next">
+        <p>PayPal has emailed you a receipt, and your shipping address was sent along with the order.</p>
+        <p>Prints ship within 5–7 business days. Questions? Email <a href="mailto:fallingtidephoto@gmail.com">fallingtidephoto@gmail.com</a>.</p>
+      </div>
+      <a href="shop.html" class="confirm-shop-link">continue shopping &rarr;</a>
     </div>
   </div>
 </main>
@@ -256,14 +278,16 @@
 </footer>
 
 <!--
-  Replace YOUR_PAYPAL_CLIENT_ID and YOUR_SQUARE_APP_ID / YOUR_SQUARE_LOCATION_ID
-  below with your real public IDs (safe to expose in the browser — not secrets).
-  See README.md for where to get them.
+  Replace YOUR_PAYPAL_CLIENT_ID below with your real public Client ID
+  (safe to expose in the browser — not a secret). See README.md.
 -->
-<script src="https://www.paypal.com/sdk/js?client-id=AXV81lvJC5sW_wt2dVfJi7S9AfYdeJBpn3JSb-SBT4K-hMRipdzxw7LUKXe-4UpaI8fTnGJJlkNm6mgl&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
 <script src="https://web.squarecdn.com/v1/square.js"></script>
 
 <script>
+  // Flip to true once you're ready to offer card payments via Square —
+  // also fill in the two IDs below (from developer.squareup.com).
+  const ENABLE_SQUARE = false;
   const SQUARE_APP_ID = 'YOUR_SQUARE_APP_ID';
   const SQUARE_LOCATION_ID = 'YOUR_SQUARE_LOCATION_ID';
 
@@ -283,33 +307,24 @@
     el.className = 'status-message' + (type ? ' ' + type : '');
   }
 
-  function getBuyer() {
-    return {
-      name: document.getElementById('buyer-name').value.trim(),
-      email: document.getElementById('buyer-email').value.trim(),
-      address: {
-        line1: document.getElementById('buyer-address1').value.trim(),
-        city: document.getElementById('buyer-city').value.trim(),
-        state: document.getElementById('buyer-state').value.trim(),
-        zip: document.getElementById('buyer-zip').value.trim(),
-      },
-    };
-  }
-
-  function validateBuyer() {
-    const b = getBuyer();
-    if (!b.name || !b.email || !b.address.line1 || !b.address.city || !b.address.state || !b.address.zip) {
-      setStatus('please fill in your name, email, and shipping address before paying.', 'error');
-      return false;
-    }
-    return true;
-  }
-
   function updatePriceLine() {
     if (!selectedVariant) return;
     const total = selectedVariant.price_cents * qty();
     document.getElementById('price-line').innerHTML =
       money(total) + (qty() > 1 ? `<span class="unit-note">(${money(selectedVariant.price_cents)} each)</span>` : '');
+  }
+
+  function showConfirmation(orderRef) {
+    const total = selectedVariant.price_cents * qty();
+    document.getElementById('confirm-summary').innerHTML = `
+      <div class="row"><span>${product.name}</span><span>${qty()} × ${money(selectedVariant.price_cents)}</span></div>
+      <div class="row"><span class="label">location</span><span>${product.location}</span></div>
+      <div class="row"><span class="label">frame</span><span>${selectedVariant.frame_color}</span></div>
+      <div class="row total"><span>total</span><span>${money(total)}</span></div>
+    `;
+    document.getElementById('confirm-ref').textContent = orderRef ? `order ref: ${orderRef}` : '';
+    document.getElementById('purchase-block').style.display = 'none';
+    document.getElementById('confirmation-view').style.display = 'block';
   }
 
   function selectVariant(variant, el) {
@@ -387,7 +402,7 @@
       renderColorOptions();
       updatePriceLine();
       initPaypal();
-      initSquare();
+      if (ENABLE_SQUARE) initSquare();
     } catch (err) {
       setStatus('could not load this print.', 'error');
     }
@@ -395,22 +410,14 @@
 
   document.getElementById('qty-select').addEventListener('change', updatePriceLine);
 
-  document.querySelectorAll('.pay-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.pay-panel').forEach(p => p.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
-    });
-  });
-
   // ---- PayPal ----
+  let paypalValidationFailed = false;
+
   function initPaypal() {
     if (!window.paypal) return;
     paypal.Buttons({
       style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'paypal' },
       createOrder: async () => {
-        if (!validateBuyer()) throw new Error('validation');
         const res = await fetch('/api/paypal/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -429,25 +436,24 @@
             orderId: data.orderID,
             variantId: selectedVariant.id,
             qty: qty(),
-            buyer: getBuyer(),
           }),
         });
         const result = await res.json();
         if (!res.ok) { setStatus(result.error || 'payment could not be completed.', 'error'); return; }
-        setStatus('thank you — your order is confirmed! a receipt is on its way to your email.', 'success');
-        document.getElementById('purchase-block').querySelectorAll('input,select,button').forEach(el => el.disabled = true);
+        showConfirmation(data.orderID);
       },
       onError: () => setStatus('something went wrong with paypal checkout. please try again.', 'error'),
     }).render('#paypal-button-container');
   }
 
-  // ---- Square ----
+  // ---- Square (disabled by default — see ENABLE_SQUARE above) ----
   async function initSquare() {
     if (!window.Square) return;
     try {
       const payments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
       squareCard = await payments.card();
       await squareCard.attach('#square-card-container');
+      document.getElementById('panel-square').style.display = 'block';
     } catch (err) {
       document.getElementById('square-card-container').textContent = 'card payment unavailable right now.';
     }
@@ -455,7 +461,6 @@
 
   document.getElementById('square-pay-btn').addEventListener('click', async () => {
     if (!squareCard) return;
-    if (!validateBuyer()) return;
     const btn = document.getElementById('square-pay-btn');
     btn.disabled = true;
     setStatus('processing payment…');
@@ -473,13 +478,11 @@
           sourceId: result.token,
           variantId: selectedVariant.id,
           qty: qty(),
-          buyer: getBuyer(),
         }),
       });
       const data = await res.json();
       if (!res.ok) { setStatus(data.error || 'payment could not be completed.', 'error'); btn.disabled = false; return; }
-      setStatus('thank you — your order is confirmed! a receipt is on its way to your email.', 'success');
-      document.getElementById('purchase-block').querySelectorAll('input,select,button').forEach(el => el.disabled = true);
+      showConfirmation(null);
     } catch (err) {
       setStatus('something went wrong. please try again.', 'error');
       btn.disabled = false;
