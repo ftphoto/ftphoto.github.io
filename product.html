@@ -200,6 +200,28 @@
   }
   footer a { color: #888; text-decoration: none; }
 
+  .shop-note {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 2rem 2.5rem;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 1.6rem;
+  }
+  .shop-note p { font-size: 11px; color: #999; font-style: italic; line-height: 1.7; margin-bottom: 0.4rem; }
+  .shop-note a { color: #999; }
+  .shop-note a:hover { color: #111; }
+
+  .back-link {
+    display: inline-block;
+    font-size: 11px;
+    color: #888;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    margin-bottom: 1.2rem;
+    transition: opacity 0.2s;
+  }
+  .back-link:hover { opacity: 0.6; }
+
   @media (max-width: 760px) {
     .product { grid-template-columns: 1fr; gap: 2rem; }
     .frame-outer { width: 55%; }
@@ -218,6 +240,7 @@
 
 <main class="product" id="product-root">
   <div>
+    <a href="shop.html" class="back-link">&larr; all prints</a>
     <div class="frame-stage">
       <div class="frame-outer black orient-portrait" id="frame-outer">
         <div class="frame-mat">
@@ -289,16 +312,22 @@
   </div>
 </main>
 
+<div class="shop-note">
+  <p>Every print arrives framed and matted in museum-quality materials, ready to hang.</p>
+  <p>Interested in a bulk order, or a size not listed here? Email <a href="mailto:fallingtidephoto@gmail.com">fallingtidephoto@gmail.com</a> — happy to help.</p>
+</div>
+
 <footer>
   <a href="mailto:fallingtidephoto@gmail.com">mail</a>
   <a href="https://www.instagram.com/fallingtidephoto/">instagram</a>
 </footer>
 
 <!--
-  Replace YOUR_PAYPAL_CLIENT_ID below with your real public Client ID
-  (safe to expose in the browser — not a secret). See README.md.
+  PayPal live Client ID is already set below. If you ever need to change
+  it (e.g. new app, switching back to sandbox), swap the client-id value
+  in the script src just below. It's public and safe to expose.
 -->
-<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AbxTNdq43gmSHlpc2PR0PzV2aYdsjKLP0Srqcg3q_aTaJKxTkVLLRc1eOnPAAo-z5aTu5euaCO9meT3F&currency=USD"></script>
 <script src="https://web.squarecdn.com/v1/square.js"></script>
 
 <script>
