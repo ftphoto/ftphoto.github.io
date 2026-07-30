@@ -81,6 +81,16 @@
   }
 
   .product-name { font-size: 18px; font-weight: 700; letter-spacing: 0.01em; margin-bottom: 0.3rem; }
+  .featured-banner {
+    display: inline-block;
+    background: #111;
+    color: #fff;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.6rem;
+    margin-bottom: 0.8rem;
+  }
   .product-location { font-size: 12px; color: #888; font-style: italic; margin-bottom: 1.6rem; }
   .product-description { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 2rem; }
 
@@ -220,6 +230,7 @@
   </div>
 
   <div class="product-details">
+    <div class="featured-banner" id="pd-badge" style="display:none;"></div>
     <div class="product-name" id="pd-name"></div>
     <div class="product-location" id="pd-location"></div>
     <div class="product-description" id="pd-description"></div>
@@ -247,6 +258,9 @@
       <div class="section-label">checkout</div>
       <div id="paypal-button-container"></div>
       <p class="paypal-note">You'll enter your shipping address on PayPal's secure checkout page.</p>
+
+      <!-- Square card checkout is built and ready — set ENABLE_SQUARE = true
+           below (and swap in your Square IDs) to turn it back on. -->
       <div id="panel-square" style="display:none;">
         <div id="square-card-container"></div>
         <button id="square-pay-btn">pay</button>
@@ -273,7 +287,12 @@
   <a href="mailto:fallingtidephoto@gmail.com">mail</a>
   <a href="https://www.instagram.com/fallingtidephoto/">instagram</a>
 </footer>
-<script src="https://www.paypal.com/sdk/js?client-id=AbxTNdq43gmSHlpc2PR0PzV2aYdsjKLP0Srqcg3q_aTaJKxTkVLLRc1eOnPAAo-z5aTu5euaCO9meT3F&currency=USD"></script>
+
+<!--
+  Replace YOUR_PAYPAL_CLIENT_ID below with your real public Client ID
+  (safe to expose in the browser — not a secret). See README.md.
+-->
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
 <script src="https://web.squarecdn.com/v1/square.js"></script>
 
 <script>
@@ -381,6 +400,11 @@
       applyOrientation();
       document.getElementById('pd-location').textContent = product.location;
       document.getElementById('pd-name').textContent = product.name;
+      if (product.featured_badge) {
+        const badge = document.getElementById('pd-badge');
+        badge.textContent = product.featured_badge;
+        badge.style.display = 'inline-block';
+      }
       document.getElementById('pd-description').textContent = product.description || '';
       document.title = `hannah holzer – ${product.name}`;
 

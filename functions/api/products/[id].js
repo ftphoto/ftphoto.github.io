@@ -3,7 +3,8 @@ import { json, serverError } from "../_utils.js";
 export async function onRequestGet({ env, params }) {
   try {
     const product = await env.DB.prepare(
-      `SELECT id, name, location, image, description FROM products WHERE id = ? AND active = 1`
+      `SELECT id, name, location, image, description, featured_badge
+       FROM products WHERE id = ? AND active = 1`
     )
       .bind(params.id)
       .first();

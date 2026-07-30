@@ -3,7 +3,9 @@ import { json, serverError } from "../_utils.js";
 export async function onRequestGet({ env }) {
   try {
     const { results: products } = await env.DB.prepare(
-      `SELECT id, name, location, image, description FROM products WHERE active = 1`
+      `SELECT id, name, location, image, description, sort_order, featured_badge
+       FROM products WHERE active = 1
+       ORDER BY sort_order DESC, name ASC`
     ).all();
 
     const { results: variants } = await env.DB.prepare(

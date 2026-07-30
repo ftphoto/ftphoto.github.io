@@ -10,12 +10,14 @@ DROP TABLE IF EXISTS variants;
 DROP TABLE IF EXISTS products;
 
 CREATE TABLE products (
-  id          TEXT PRIMARY KEY,
-  name        TEXT NOT NULL,      -- print title, e.g. "The Long Way Home"
-  location    TEXT NOT NULL,      -- shown as the subtitle, e.g. "Cannon Beach, Oregon — 2026"
-  image       TEXT NOT NULL,      -- plain (unframed) photo, path relative to site root
-  description TEXT,
-  active      INTEGER NOT NULL DEFAULT 1
+  id             TEXT PRIMARY KEY,
+  name           TEXT NOT NULL,      -- print title, e.g. "The Long Way Home"
+  location       TEXT NOT NULL,      -- shown as the subtitle, e.g. "Cannon Beach, Oregon — 2026"
+  image          TEXT NOT NULL,      -- plain (unframed) photo, path relative to site root
+  description    TEXT,
+  active         INTEGER NOT NULL DEFAULT 1,
+  sort_order     INTEGER NOT NULL DEFAULT 0,  -- higher = shown first in the shop grid
+  featured_badge TEXT                          -- optional banner text, e.g. "Featured at KBM Art Gallery"
 );
 
 CREATE TABLE variants (
