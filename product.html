@@ -93,6 +93,7 @@
   }
   .product-location { font-size: 12px; color: #888; font-style: italic; margin-bottom: 1.6rem; }
   .product-description { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 2rem; }
+  .product-size { font-size: 12px; color: #666; margin-bottom: 1.6rem; }
 
   .section-label {
     font-size: 10px;
@@ -233,6 +234,11 @@
     <div class="featured-banner" id="pd-badge" style="display:none;"></div>
     <div class="product-name" id="pd-name"></div>
     <div class="product-location" id="pd-location"></div>
+
+    <div class="section-label">size</div>
+    <div class="product-size" id="pd-size"></div>
+
+    <div class="section-label">description</div>
     <div class="product-description" id="pd-description"></div>
 
     <div id="sold-out-banner" class="sold-out-banner" style="display:none;">
@@ -355,6 +361,7 @@
     const img = document.getElementById('pd-image');
     const frameOuter = document.getElementById('frame-outer');
     const dims = document.getElementById('frame-dims');
+    const size = document.getElementById('pd-size');
 
     function decide() {
       const isLandscape = img.naturalWidth > img.naturalHeight;
@@ -363,6 +370,9 @@
       dims.textContent = isLandscape
         ? 'framed 23\u2033 × 17\u2033 — 18\u2033 × 12\u2033 photo, 2\u2033 mat'
         : 'framed 17\u2033 × 23\u2033 — 12\u2033 × 18\u2033 photo, 2\u2033 mat';
+      size.textContent = isLandscape
+        ? '18\u2033 × 12\u2033 archival print, 2\u2033 white mat, framed 23\u2033 × 17\u2033 overall.'
+        : '12\u2033 × 18\u2033 archival print, 2\u2033 white mat, framed 17\u2033 × 23\u2033 overall.';
     }
 
     if (img.complete && img.naturalWidth) decide();
