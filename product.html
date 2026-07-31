@@ -63,35 +63,24 @@
     gap: 3.5rem;
   }
 
-/* Even 2" mat + 2" frame */
+:root {
+  /* Adjust this once and everything updates */
+  --border-thickness: 2vmin;
+}
 
-.frame-stage {
+.frame-card {
   background: #f5f5f3;
-  padding: 3rem 2.5rem;
+  padding: 2.4rem 1.6rem 1.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  aspect-ratio: 1 / 1.05;
 }
 
 .frame-outer {
-  width: 68%;
-  box-shadow: 0 30px 55px rgba(0, 0, 0, 0.16);
-  transition: background 0.2s, border-color 0.2s;
-}
-
-/* PORTRAIT — 19.25 x 25.25 */
-.frame-outer.orient-portrait {
-  aspect-ratio: 19.25 / 25.25;
-  /* 2" frame ÷ 25.25" total height = 7.92% */
-  padding: 7.92%;
-}
-
-/* LANDSCAPE — 25.25 x 19.25 */
-.frame-outer.orient-landscape {
-  aspect-ratio: 25.25 / 19.25;
-  /* 2" frame ÷ 19.25" total height = 10.39% */
-  padding: 10.39%;
-  width: 90%;
+  position: relative;
+  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.14);
+  padding: var(--border-thickness); /* FRAME thickness */
 }
 
 .frame-outer.black-flat {
@@ -112,19 +101,32 @@
   border: 1px solid #dcdcdc;
 }
 
+/* Aspect ratios only — no padding here */
+.frame-outer.size-small.orient-portrait {
+  width: 58%;
+  aspect-ratio: 19.25 / 25.25;
+}
+
+.frame-outer.size-small.orient-landscape {
+  width: 78%;
+  aspect-ratio: 25.25 / 19.25;
+}
+
+.frame-outer.size-medium.orient-portrait {
+  width: 58%;
+  aspect-ratio: 23.25 / 31.25;
+}
+
+.frame-outer.size-medium.orient-landscape {
+  width: 78%;
+  aspect-ratio: 31.25 / 23.25;
+}
+
 .frame-mat {
   width: 100%;
   height: 100%;
   background: #fff;
-}
-
-/* Mat thickness = 2" → same math as frame */
-.frame-outer.orient-portrait .frame-mat {
-  padding: 7.92%;
-}
-
-.frame-outer.orient-landscape .frame-mat {
-  padding: 10.39%;
+  padding: var(--border-thickness); /* MAT thickness */
 }
 
 .frame-window {
@@ -140,13 +142,6 @@
   display: block;
 }
 
-.frame-dims {
-  text-align: center;
-  font-size: 10px;
-  color: #aaa;
-  font-style: italic;
-  margin-top: 0.9rem;
-}
 
 
   .product-name {
