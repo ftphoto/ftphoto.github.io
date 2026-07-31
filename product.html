@@ -62,8 +62,8 @@
     grid-template-columns: 1.15fr 0.85fr;
     gap: 3.5rem;
   }
-/* Card wrapper */
-.frame-card {
+/* Card wrapper — the actual container used in the markup below. */
+.frame-stage {
   background: #f5f5f3;
   padding: 2.4rem 1.6rem 1.6rem;
   display: flex;
@@ -76,9 +76,23 @@
    redrawFrame(), in %) is the visible 2" frame face, and its background
    is the wood/paint finish. Percent padding resolves against width for
    all four sides, so a single % gives a true uniform physical inset
-   regardless of portrait/landscape orientation. */
+   regardless of portrait/landscape orientation. Width is keyed only to
+   orientation (not size — small/medium share the same aspect ratio
+   closely enough that one width works for both); redrawFrame() sets
+   the exact aspect-ratio inline so height auto-derives correctly. */
 .frame-outer {
   box-shadow: 0 22px 40px rgba(0,0,0,0.14);
+}
+
+.frame-outer.orient-portrait { width: 58%; }
+.frame-outer.orient-landscape { width: 78%; }
+
+.frame-dims {
+  margin-top: 1rem;
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+  text-align: center;
 }
 
 /* MAT BOARD — padding (set inline by redrawFrame()) is the 1.625" reveal */
@@ -143,27 +157,6 @@
   --wood-lo: #8f6537;
   --wood-grain-dark: rgba(94,62,26,0.35);
   --wood-grain-light: rgba(255,238,205,0.4);
-}
-
-/* ASPECT RATIOS — no padding here, frame-face padding is set inline by JS */
-.frame-outer.size-small.orient-portrait {
-  width: 58%;
-  aspect-ratio: 19.25 / 25.25;
-}
-
-.frame-outer.size-small.orient-landscape {
-  width: 78%;
-  aspect-ratio: 25.25 / 19.25;
-}
-
-.frame-outer.size-medium.orient-portrait {
-  width: 58%;
-  aspect-ratio: 23.25 / 31.25;
-}
-
-.frame-outer.size-medium.orient-landscape {
-  width: 78%;
-  aspect-ratio: 31.25 / 23.25;
 }
 
 /* Hover effect */
@@ -840,6 +833,9 @@
     const matPct =
       (matVisible / innerFrameW * 100).toFixed(3) + '%';
 
+    frameOuter.classList.toggle('orient-landscape', isLandscape);
+    frameOuter.classList.toggle('orient-portrait', !isLandscape);
+
     frameOuter.style.aspectRatio = `${d.frameW} / ${d.frameH}`;
     frameOuter.style.padding = framePct;
     frameMat.style.padding = matPct;
@@ -893,6 +889,8 @@
         s => product.variants.some(v => v.size_label === s)
       );
 
+    let defaultPicked = false;
+
     sizesPresent.forEach(sizeKey => {
       const variantsForSize =
         product.variants.filter(v => v.size_label === sizeKey);
@@ -934,9 +932,10 @@
           renderColorOptions();
         });
 
-        if (!selectedVariant) {
+        if (!defaultPicked) {
           selectedSize = sizeKey;
           el.classList.add('selected');
+          defaultPicked = true;
         }
       }
 
