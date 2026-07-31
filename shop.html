@@ -92,7 +92,7 @@
     text-decoration: none;
     color: #111;
   }
-/* Even 2" frame + 2" mat for shop cards */
+/* 13/16" frame + 3" mat for shop cards */
 
 .frame-card {
   background: #f5f5f3;
@@ -109,54 +109,54 @@
 
 /* ---- SMALL ---- */
 
-/* Small portrait: 19.25 x 25.25. CSS resolves % padding against the
-   containing block's WIDTH for all four sides, so frame % = 2in/frameW
-   and mat % = 1.625in/innerFrameW give a true uniform physical inset
+/* Small portrait: 19 x 25. CSS resolves % padding against the
+   containing block's WIDTH for all four sides, so frame % = (13/16)in/frameW
+   and mat % = 2.6875in/innerFrameW give a true uniform physical inset
    regardless of orientation — these must NOT be swapped between
    portrait/landscape (that was the earlier bug). */
 .frame-outer.size-small.orient-portrait {
   width: 58%;
-  aspect-ratio: 19.25 / 25.25;
-  padding: 10.39%; /* 2" frame */
+  aspect-ratio: 19 / 25;
+  padding: 4.28%; /* 13/16" frame */
 }
 
 .frame-outer.size-small.orient-portrait .frame-mat {
-  padding: 10.66%; /* 1.625" mat reveal */
+  padding: 15.47%; /* 3" mat reveal (2.6875" precise) */
 }
 
-/* Small landscape: 25.25 x 19.25 */
+/* Small landscape: 25 x 19 */
 .frame-outer.size-small.orient-landscape {
   width: 78%;
-  aspect-ratio: 25.25 / 19.25;
-  padding: 7.92%; /* 2" frame */
+  aspect-ratio: 25 / 19;
+  padding: 3.25%; /* 13/16" frame */
 }
 
 .frame-outer.size-small.orient-landscape .frame-mat {
-  padding: 7.65%; /* 1.625" mat reveal */
+  padding: 11.50%; /* 3" mat reveal (2.6875" precise) */
 }
 
 /* ---- MEDIUM ---- */
 
-/* Medium portrait: 23.25 x 31.25 */
+/* Medium portrait: 23 x 31 */
 .frame-outer.size-medium.orient-portrait {
   width: 58%;
-  aspect-ratio: 23.25 / 31.25;
-  padding: 8.60%; /* 2" frame */
+  aspect-ratio: 23 / 31;
+  padding: 3.53%; /* 13/16" frame */
 }
 
 .frame-outer.size-medium.orient-portrait .frame-mat {
-  padding: 8.44%; /* 1.625" mat reveal */
+  padding: 12.57%; /* 3" mat reveal (2.6875" precise) */
 }
 
-/* Medium landscape: 31.25 x 23.25 */
+/* Medium landscape: 31 x 23 */
 .frame-outer.size-medium.orient-landscape {
   width: 78%;
-  aspect-ratio: 31.25 / 23.25;
-  padding: 6.40%; /* 2" frame */
+  aspect-ratio: 31 / 23;
+  padding: 2.62%; /* 13/16" frame */
 }
 
 .frame-outer.size-medium.orient-landscape .frame-mat {
-  padding: 5.96%; /* 1.625" mat reveal */
+  padding: 9.15%; /* 3" mat reveal (2.6875" precise) */
 }
 
 /* FRAME FINISHES — a soft mitered-corner bevel (mimics a rounded
@@ -179,31 +179,31 @@
       var(--wood-hi-wash) 360deg);
 }
 
-.frame-outer.black-flat {
-  --wood-base: #2a2724;
-  --wood-hi-wash: rgba(255,255,255,0.07);
-  --wood-lo-wash: rgba(0,0,0,0.32);
-  --wood-grain-a: rgba(0,0,0,0.16);
-  --wood-grain-b: rgba(255,255,255,0.04);
+/* Whitewashed: a light grey-white wash over solid wood — grain shows
+   through, unlike a flat painted white. */
+.frame-outer.whitewashed {
+  --wood-base: #e6e2d8;
+  --wood-hi-wash: rgba(255,255,255,0.40);
+  --wood-lo-wash: rgba(90,80,60,0.10);
+  --wood-grain-a: rgba(120,110,90,0.10);
+  --wood-grain-b: rgba(255,255,255,0.12);
+  border: 1px solid #d8d3c5;
 }
 
-/* White Flat: a genuinely flat painted profile — no grain, just a
-   faint edge shadow for depth against the card background. */
-.frame-outer.white-flat {
-  --wood-base: #efece3;
-  --wood-hi-wash: rgba(255,255,255,0.35);
-  --wood-lo-wash: rgba(0,0,0,0.04);
-  --wood-grain-a: transparent;
-  --wood-grain-b: transparent;
-  border: 1px solid #dcdcdc;
+.frame-outer.black-walnut {
+  --wood-base: #2e2420;
+  --wood-hi-wash: rgba(255,255,255,0.06);
+  --wood-lo-wash: rgba(0,0,0,0.35);
+  --wood-grain-a: rgba(0,0,0,0.22);
+  --wood-grain-b: rgba(255,255,255,0.05);
 }
 
-.frame-outer.blonde-maple {
-  --wood-base: #d7b98a;
-  --wood-hi-wash: rgba(255,255,255,0.22);
-  --wood-lo-wash: rgba(94,62,26,0.22);
-  --wood-grain-a: rgba(120,80,40,0.14);
-  --wood-grain-b: rgba(255,240,210,0.10);
+.frame-outer.cherry {
+  --wood-base: #7a3d2c;
+  --wood-hi-wash: rgba(255,220,200,0.20);
+  --wood-lo-wash: rgba(60,20,10,0.28);
+  --wood-grain-a: rgba(50,20,12,0.20);
+  --wood-grain-b: rgba(230,170,140,0.12);
 }
 
 .frame-mat {
@@ -413,14 +413,14 @@
             : '';
 
         /*
-          Prefer Black Flat, Small size, as the
+          Prefer Black Walnut, Small size, as the
           default thumbnail if in stock.
         */
         const thumbVariant =
           inStock.find(
             v =>
               v.size_label === 'small' &&
-              v.frame_color === 'black-flat'
+              v.frame_color === 'black-walnut'
           ) ||
           inStock[0] ||
           p.variants[0];
@@ -443,7 +443,7 @@
           <div class="frame-card">
             <div class="
               frame-outer
-              ${thumbVariant ? thumbVariant.frame_color : 'black-flat'}
+              ${thumbVariant ? thumbVariant.frame_color : 'black-walnut'}
               size-${thumbSize}
               orient-portrait
             ">
