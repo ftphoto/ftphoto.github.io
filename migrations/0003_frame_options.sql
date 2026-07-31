@@ -7,7 +7,10 @@ UPDATE variants
 SET frame_color = 'white-flat'
 WHERE frame_color = 'white';
 
--- Add Blonde Maple only where the exact variant does not already exist.
+
+-- Add one Blonde Maple variant per product + size.
+-- GROUP BY prevents duplicate IDs when multiple Black Flat
+-- rows exist for the same product/size.
 INSERT INTO variants (
   id,
   product_id,
@@ -21,13 +24,17 @@ SELECT
   v.product_id,
   v.size_label,
   'blonde-maple',
-  v.price_cents,
+  MIN(v.price_cents),
   0
 FROM variants v
 WHERE v.frame_color = 'black-flat'
   AND NOT EXISTS (
     SELECT 1
     FROM variants existing
-    WHERE existing.id =
-      v.product_id || '-' || v.size_label || '-blonde-maple'
-  );
+    WHERE existing.product_id = v.product_id
+      AND existing.size_label = v.size_label
+      AND existing.frame_color = 'blonde-maple'
+  )
+GROUP BY
+  v.product_id,
+  v.size_label;
