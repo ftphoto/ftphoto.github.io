@@ -1157,6 +1157,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         label: 'paypal'
       },
 
+      onClick: (data) => {
+        amplitude.track('Payment Option Clicked', {
+          payment_method: data.fundingSource || 'paypal',
+          page_url: window.location.href,
+          product_id: productId
+        });
+      },
+
       createOrder: async () => {
         const res =
           await fetch(
@@ -1268,6 +1276,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       'click',
       async () => {
         if (!squareCard) return;
+
+        amplitude.track('Payment Option Clicked', {
+          payment_method: 'credit_card',
+          page_url: window.location.href,
+          product_id: productId
+        });
 
         const btn =
           document.getElementById(
