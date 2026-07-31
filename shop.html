@@ -109,26 +109,30 @@
 
 /* ---- SMALL ---- */
 
-/* Small portrait: 19.25 x 25.25 */
+/* Small portrait: 19.25 x 25.25. CSS resolves % padding against the
+   containing block's WIDTH for all four sides, so frame % = 2in/frameW
+   and mat % = 1.625in/innerFrameW give a true uniform physical inset
+   regardless of orientation — these must NOT be swapped between
+   portrait/landscape (that was the earlier bug). */
 .frame-outer.size-small.orient-portrait {
   width: 58%;
   aspect-ratio: 19.25 / 25.25;
-  padding: 7.92%; /* 2" frame */
+  padding: 10.39%; /* 2" frame */
 }
 
 .frame-outer.size-small.orient-portrait .frame-mat {
-  padding: 7.92%; /* 2" mat */
+  padding: 10.66%; /* 1.625" mat reveal */
 }
 
 /* Small landscape: 25.25 x 19.25 */
 .frame-outer.size-small.orient-landscape {
   width: 78%;
   aspect-ratio: 25.25 / 19.25;
-  padding: 10.39%; /* 2" frame */
+  padding: 7.92%; /* 2" frame */
 }
 
 .frame-outer.size-small.orient-landscape .frame-mat {
-  padding: 10.39%; /* 2" mat */
+  padding: 7.65%; /* 1.625" mat reveal */
 }
 
 /* ---- MEDIUM ---- */
@@ -137,40 +141,69 @@
 .frame-outer.size-medium.orient-portrait {
   width: 58%;
   aspect-ratio: 23.25 / 31.25;
-  padding: 6.40%; /* 2" frame */
+  padding: 8.60%; /* 2" frame */
 }
 
 .frame-outer.size-medium.orient-portrait .frame-mat {
-  padding: 6.40%; /* 2" mat */
+  padding: 8.44%; /* 1.625" mat reveal */
 }
 
 /* Medium landscape: 31.25 x 23.25 */
 .frame-outer.size-medium.orient-landscape {
   width: 78%;
   aspect-ratio: 31.25 / 23.25;
-  padding: 8.60%; /* 2" frame */
+  padding: 6.40%; /* 2" frame */
 }
 
 .frame-outer.size-medium.orient-landscape .frame-mat {
-  padding: 8.60%; /* 2" mat */
+  padding: 5.96%; /* 1.625" mat reveal */
+}
+
+/* FRAME FINISHES — a soft mitered-corner bevel (mimics a rounded
+   moulding profile) plus faint, slightly-irregular grain, all as low-
+   contrast translucent washes over a matte base tone. Two grain layers
+   at close-but-different angles/spacing keep it from reading as a
+   uniform repeating stripe. */
+.frame-outer {
+  background-color: var(--wood-base);
+  background-image:
+    repeating-linear-gradient(4deg,
+      var(--wood-grain-a) 0px, var(--wood-grain-a) 1px,
+      transparent 1px, transparent 5px),
+    repeating-linear-gradient(-2deg,
+      var(--wood-grain-b) 0px, var(--wood-grain-b) 1px,
+      transparent 1px, transparent 7px),
+    conic-gradient(from 225deg at 50% 50%,
+      var(--wood-hi-wash) 0deg, transparent 90deg,
+      var(--wood-lo-wash) 180deg, transparent 270deg,
+      var(--wood-hi-wash) 360deg);
 }
 
 .frame-outer.black-flat {
-  background: #171717;
+  --wood-base: #2a2724;
+  --wood-hi-wash: rgba(255,255,255,0.07);
+  --wood-lo-wash: rgba(0,0,0,0.32);
+  --wood-grain-a: rgba(0,0,0,0.16);
+  --wood-grain-b: rgba(255,255,255,0.04);
+}
+
+/* White Flat: a genuinely flat painted profile — no grain, just a
+   faint edge shadow for depth against the card background. */
+.frame-outer.white-flat {
+  --wood-base: #efece3;
+  --wood-hi-wash: rgba(255,255,255,0.35);
+  --wood-lo-wash: rgba(0,0,0,0.04);
+  --wood-grain-a: transparent;
+  --wood-grain-b: transparent;
+  border: 1px solid #dcdcdc;
 }
 
 .frame-outer.blonde-maple {
-  background: linear-gradient(
-    135deg,
-    #d7bf91,
-    #c5a976 45%,
-    #dfc99e
-  );
-}
-
-.frame-outer.white-flat {
-  background: #fff;
-  border: 1px solid #dcdcdc;
+  --wood-base: #d7b98a;
+  --wood-hi-wash: rgba(255,255,255,0.22);
+  --wood-lo-wash: rgba(94,62,26,0.22);
+  --wood-grain-a: rgba(120,80,40,0.14);
+  --wood-grain-b: rgba(255,240,210,0.10);
 }
 
 .frame-mat {
