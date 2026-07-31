@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>hannah holzer – print</title>
+<title>Falling Tide Photo — Fine Art Print</title>
+<meta name="description" id="meta-description" content="Fine art landscape and ocean photography, archival printed and framed — from Falling Tide Photo.">
+<meta property="og:type" content="product">
+<meta property="og:title" id="og-title" content="Falling Tide Photo — Fine Art Print">
+<meta property="og:description" id="og-description" content="Fine art landscape and ocean photography, archival printed and framed — from Falling Tide Photo.">
+<meta property="og:image" id="og-image" content="">
+<meta property="og:url" id="og-url" content="">
+<meta name="twitter:card" content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1032,7 +1039,8 @@
       product = await res.json();
 
       document.getElementById('pd-image').src = product.image;
-      document.getElementById('pd-image').alt = product.name;
+      document.getElementById('pd-image').alt =
+        `${product.name} — fine art print, ${product.location}`;
 
       applyOrientation();
 
@@ -1056,8 +1064,21 @@
       document.getElementById('pd-description').textContent =
         product.description || '';
 
-      document.title =
-        `hannah holzer – ${product.name}`;
+      const seoTitle =
+        `${product.name} — Fine Art Print, ${product.location} | Falling Tide Photo`;
+
+      const seoDescription =
+        product.description
+          ? `${product.description} Archival fine art print, framed and matted — ${product.location}.`
+          : `Fine art print from ${product.location}, archival printed and framed — Falling Tide Photo.`;
+
+      document.title = seoTitle;
+
+      document.getElementById('meta-description').setAttribute('content', seoDescription);
+      document.getElementById('og-title').setAttribute('content', seoTitle);
+      document.getElementById('og-description').setAttribute('content', seoDescription);
+      document.getElementById('og-image').setAttribute('content', new URL(product.image, window.location.href).href);
+      document.getElementById('og-url').setAttribute('content', window.location.href);
 
       const anyInStock =
         product.variants.some(v => v.stock_qty > 0);
