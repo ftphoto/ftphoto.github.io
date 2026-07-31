@@ -38,7 +38,7 @@ export async function onRequestPost({ request, env }) {
         idempotency_key: idempotencyKey,
         location_id: env.SQUARE_LOCATION_ID,
         amount_money: { amount: amountCents, currency: "USD" },
-        note: `${variant.name} — ${variant.frame_color} frame`,
+        note: `${variant.name} — ${variant.size_label} — ${variant.frame_color} frame`,
       }),
     });
 

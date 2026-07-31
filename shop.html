@@ -88,13 +88,17 @@
   .frame-outer {
     box-shadow: 0 22px 40px rgba(0, 0, 0, 0.14);
   }
-  .frame-outer.orient-portrait  { width: 58%; aspect-ratio: 17 / 23; padding: 2.941%; }
-  .frame-outer.orient-landscape { width: 78%; aspect-ratio: 23 / 17; padding: 2.174%; }
+  .frame-outer.size-small.orient-portrait   { width: 58%; aspect-ratio: 17 / 23; padding: 2.941%; }
+  .frame-outer.size-small.orient-landscape  { width: 78%; aspect-ratio: 23 / 17; padding: 2.174%; }
+  .frame-outer.size-medium.orient-portrait  { width: 58%; aspect-ratio: 21 / 29; padding: 2.381%; }
+  .frame-outer.size-medium.orient-landscape { width: 78%; aspect-ratio: 29 / 21; padding: 1.724%; }
   .frame-outer.black { background: #171717; }
   .frame-outer.white { background: #fff; border: 1px solid #dcdcdc; }
   .frame-mat { width: 100%; height: 100%; background: #fff; }
-  .frame-outer.orient-portrait .frame-mat  { padding: 11.765%; }
-  .frame-outer.orient-landscape .frame-mat { padding: 8.696%; }
+  .frame-outer.size-small.orient-portrait .frame-mat   { padding: 11.765%; }
+  .frame-outer.size-small.orient-landscape .frame-mat  { padding: 8.696%; }
+  .frame-outer.size-medium.orient-portrait .frame-mat  { padding: 9.524%; }
+  .frame-outer.size-medium.orient-landscape .frame-mat { padding: 6.897%; }
   .frame-window { width: 100%; height: 100%; overflow: hidden; }
   .frame-window img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -201,16 +205,22 @@
       products.forEach(p => {
         const inStock = p.variants.filter(v => v.stock_qty > 0);
         const soldOut = inStock.length === 0;
-        // Prefer showing the black frame as the default thumbnail if in stock.
-        const thumbVariant = inStock.find(v => v.frame_color === 'black') || inStock[0] || p.variants[0];
-        const price = thumbVariant ? formatPrice(thumbVariant.price_cents) : '';
+        // "From" price always reflects the Small size, regardless of frame color.
+        const smallInStock = inStock.filter(v => v.size_label === 'small');
+        const cheapestSmall = smallInStock.length
+          ? smallInStock.reduce((a, b) => a.price_cents < b.price_cents ? a : b)
+          : null;
+        const price = cheapestSmall ? `from ${formatPrice(cheapestSmall.price_cents)}` : '';
+        // Prefer showing the black frame, Small size, as the default thumbnail if in stock.
+        const thumbVariant = inStock.find(v => v.size_label === 'small' && v.frame_color === 'black') || inStock[0] || p.variants[0];
+        const thumbSize = thumbVariant ? thumbVariant.size_label : 'small';
 
         const a = document.createElement('a');
         a.className = 'product-card';
         a.href = `product.html?id=${encodeURIComponent(p.id)}`;
         a.innerHTML = `
           <div class="frame-card">
-            <div class="frame-outer ${thumbVariant ? thumbVariant.frame_color : 'black'} orient-portrait">
+            <div class="frame-outer ${thumbVariant ? thumbVariant.frame_color : 'black'} size-${thumbSize} orient-portrait">
               <div class="frame-mat">
                 <div class="frame-window">
                   <img src="${p.image}" alt="${p.name}" loading="lazy">

@@ -23,6 +23,7 @@ CREATE TABLE products (
 CREATE TABLE variants (
   id          TEXT PRIMARY KEY,
   product_id  TEXT NOT NULL REFERENCES products(id),
+  size_label  TEXT NOT NULL DEFAULT 'small', -- 'small' (12x18 photo, 17x23 framed) | 'medium' (16x24 photo, 21x29 framed)
   frame_color TEXT NOT NULL,      -- 'black' | 'white'
   price_cents INTEGER NOT NULL,
   stock_qty   INTEGER NOT NULL DEFAULT 0

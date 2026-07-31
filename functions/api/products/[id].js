@@ -12,8 +12,8 @@ export async function onRequestGet({ env, params }) {
     if (!product) return json({ error: "Not found" }, { status: 404 });
 
     const { results: variants } = await env.DB.prepare(
-      `SELECT id, frame_color, price_cents, stock_qty
-       FROM variants WHERE product_id = ? ORDER BY frame_color ASC`
+      `SELECT id, size_label, frame_color, price_cents, stock_qty
+       FROM variants WHERE product_id = ? ORDER BY size_label ASC, frame_color ASC`
     )
       .bind(params.id)
       .all();

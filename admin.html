@@ -50,7 +50,7 @@
   <div id="dashboard-view">
     <table>
       <thead>
-        <tr><th>print</th><th>frame</th><th>price</th><th>stock</th><th></th></tr>
+        <tr><th>print</th><th>size</th><th>frame</th><th>price</th><th>stock</th><th></th></tr>
       </thead>
       <tbody id="stock-rows"></tbody>
     </table>
@@ -94,6 +94,7 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${v.name}</td>
+        <td>${v.size_label}</td>
         <td>${v.frame_color}</td>
         <td>${money(v.price_cents)}</td>
         <td><input type="number" min="0" class="stock-input" value="${v.stock_qty}" data-id="${v.id}"></td>

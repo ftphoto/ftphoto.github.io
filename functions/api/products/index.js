@@ -9,8 +9,8 @@ export async function onRequestGet({ env }) {
     ).all();
 
     const { results: variants } = await env.DB.prepare(
-      `SELECT id, product_id, frame_color, price_cents, stock_qty
-       FROM variants ORDER BY frame_color ASC`
+      `SELECT id, product_id, size_label, frame_color, price_cents, stock_qty
+       FROM variants ORDER BY size_label ASC, frame_color ASC`
     ).all();
 
     const byProduct = {};

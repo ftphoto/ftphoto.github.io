@@ -93,7 +93,6 @@
   }
   .product-location { font-size: 12px; color: #888; font-style: italic; margin-bottom: 1.6rem; }
   .product-description { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 2rem; }
-  .product-size { font-size: 12px; color: #666; margin-bottom: 1.6rem; }
 
   .section-label {
     font-size: 10px;
@@ -102,6 +101,33 @@
     color: #888;
     margin-bottom: 0.7rem;
   }
+
+  /* Size choice */
+  .size-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.6rem; }
+  .size-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e8e8e8;
+    padding: 0.6rem 0.9rem;
+    cursor: pointer;
+    font-size: 12px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .size-option:hover { border-color: #ccc; }
+  .size-option.selected { border-color: #111; background: #fafafa; }
+  .size-option.disabled { opacity: 0.4; cursor: not-allowed; }
+  .size-option .meta { font-size: 11px; color: #888; }
+
+  /* Static print & framing spec block */
+  .sizing-info { margin-bottom: 1.8rem; }
+  .sizing-row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: #555; padding: 0.3rem 0;
+    border-bottom: 1px solid #f2f2f2;
+  }
+  .sizing-row .sizing-name { font-weight: 700; color: #111; }
+  .sizing-note { font-size: 11px; color: #999; font-style: italic; margin-top: 0.6rem; line-height: 1.6; }
 
   /* Frame color choice */
   .color-options { display: flex; gap: 0.6rem; margin-bottom: 1.6rem; }
@@ -258,8 +284,12 @@
     <div class="product-name" id="pd-name"></div>
     <div class="product-location" id="pd-location"></div>
 
-    <div class="section-label">size</div>
-    <div class="product-size" id="pd-size"></div>
+    <div class="section-label">print &amp; framing</div>
+    <div class="sizing-info">
+      <div class="sizing-row"><span class="sizing-name">Small</span><span>12&Prime; × 18&Prime; photo — framed 17&Prime; × 23&Prime;</span></div>
+      <div class="sizing-row"><span class="sizing-name">Medium</span><span>16&Prime; × 24&Prime; photo — framed 21&Prime; × 29&Prime;</span></div>
+      <p class="sizing-note">Every print includes a 2&Prime; white mat and a 0.5&Prime; black or white wood frame, ready to hang.</p>
+    </div>
 
     <div class="section-label">description</div>
     <div class="product-description" id="pd-description"></div>
@@ -269,6 +299,9 @@
     </div>
 
     <div id="purchase-block">
+      <div class="section-label">size</div>
+      <div class="size-options" id="size-options"></div>
+
       <div class="section-label">frame color</div>
       <div class="color-options" id="color-options"></div>
 
@@ -342,7 +375,19 @@
 
   let product = null;
   let selectedVariant = null;
+  let selectedSize = 'small';
+  let isLandscape = false;
   let squareCard = null;
+
+  // Real dimensions per size, in inches — trim (0.5") + mat (2") = 2.5"
+  // border on every side, for both sizes, so the same percentage-of-width
+  // trick works for all four size × orientation combinations.
+  const SIZE_LABELS = { small: 'Small — 12\u2033×18\u2033', medium: 'Medium — 16\u2033×24\u2033' };
+  const SIZE_ORDER = ['small', 'medium'];
+  const SIZE_DIMS = {
+    small:  { portrait: { frameW: 17, frameH: 23 }, landscape: { frameW: 23, frameH: 17 } },
+    medium: { portrait: { frameW: 21, frameH: 29 }, landscape: { frameW: 29, frameH: 21 } },
+  };
 
   function money(cents) { return '$' + (cents / 100).toFixed(2); }
   function qty() { return parseInt(document.getElementById('qty-select').value, 10); }
@@ -365,6 +410,7 @@
     document.getElementById('confirm-summary').innerHTML = `
       <div class="row"><span>${product.name}</span><span>${qty()} × ${money(selectedVariant.price_cents)}</span></div>
       <div class="row"><span class="label">location</span><span>${product.location}</span></div>
+      <div class="row"><span class="label">size</span><span>${SIZE_LABELS[selectedVariant.size_label]}</span></div>
       <div class="row"><span class="label">frame</span><span>${selectedVariant.frame_color}</span></div>
       <div class="row total"><span>total</span><span>${money(total)}</span></div>
     `;
@@ -373,9 +419,28 @@
     document.getElementById('confirmation-view').style.display = 'block';
   }
 
-  function selectVariant(variant, el) {
+  // Redraws the frame mockup for the current size + orientation. Padding
+  // is expressed as % of width (how CSS padding % always resolves), using
+  // inches/frameWidthInches — that's why the same formula works whether
+  // the frame is 17", 21", 23", or 29" wide.
+  function redrawFrame() {
+    const d = SIZE_DIMS[selectedSize][isLandscape ? 'landscape' : 'portrait'];
+    const frameOuter = document.getElementById('frame-outer');
+    const frameMat = frameOuter.querySelector('.frame-mat');
+    const trimPct = (0.5 / d.frameW * 100).toFixed(3) + '%';
+    const matPct = (2 / d.frameW * 100).toFixed(3) + '%';
+
+    frameOuter.style.aspectRatio = `${d.frameW} / ${d.frameH}`;
+    frameOuter.style.padding = trimPct;
+    frameMat.style.padding = matPct;
+
+    document.getElementById('frame-dims').textContent =
+      `framed ${d.frameW}\u2033 × ${d.frameH}\u2033 overall`;
+  }
+
+  function selectVariant(variant, el, groupSelector) {
     selectedVariant = variant;
-    document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+    document.querySelectorAll(groupSelector).forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
     const frameOuter = document.getElementById('frame-outer');
     frameOuter.classList.remove('black', 'white');
@@ -383,42 +448,63 @@
     updatePriceLine();
   }
 
-  // Detects the photo's real aspect ratio once it loads and flips the
-  // frame between portrait (17x23) and landscape (23x17) to match —
-  // trim and mat stay physically 0.5in / 2in either way.
+  // Detects the photo's real aspect ratio once it loads so the frame can
+  // flip between portrait and landscape proportions to match.
   function applyOrientation() {
     const img = document.getElementById('pd-image');
-    const frameOuter = document.getElementById('frame-outer');
-    const dims = document.getElementById('frame-dims');
-    const size = document.getElementById('pd-size');
-
     function decide() {
-      const isLandscape = img.naturalWidth > img.naturalHeight;
-      frameOuter.classList.toggle('orient-landscape', isLandscape);
-      frameOuter.classList.toggle('orient-portrait', !isLandscape);
-      dims.textContent = isLandscape
-        ? 'framed 23\u2033 × 17\u2033 — 18\u2033 × 12\u2033 photo, 2\u2033 mat'
-        : 'framed 17\u2033 × 23\u2033 — 12\u2033 × 18\u2033 photo, 2\u2033 mat';
-      size.textContent = isLandscape
-        ? '18\u2033 × 12\u2033 archival print, 2\u2033 white mat, framed 23\u2033 × 17\u2033 overall.'
-        : '12\u2033 × 18\u2033 archival print, 2\u2033 white mat, framed 17\u2033 × 23\u2033 overall.';
+      isLandscape = img.naturalWidth > img.naturalHeight;
+      redrawFrame();
     }
-
     if (img.complete && img.naturalWidth) decide();
     else img.addEventListener('load', decide);
+  }
+
+  function renderSizeOptions() {
+    const container = document.getElementById('size-options');
+    container.innerHTML = '';
+    // Always show Small before Medium, regardless of query ordering.
+    const sizesPresent = SIZE_ORDER.filter(s => product.variants.some(v => v.size_label === s));
+
+    sizesPresent.forEach(sizeKey => {
+      const variantsForSize = product.variants.filter(v => v.size_label === sizeKey);
+      const inStockForSize = variantsForSize.filter(v => v.stock_qty > 0);
+      const soldOut = inStockForSize.length === 0;
+      const cheapest = inStockForSize.length
+        ? inStockForSize.reduce((a, b) => a.price_cents < b.price_cents ? a : b)
+        : variantsForSize[0];
+
+      const el = document.createElement('div');
+      el.className = 'size-option' + (soldOut ? ' disabled' : '');
+      el.innerHTML = `<span>${SIZE_LABELS[sizeKey] || sizeKey}</span><span class="meta">${soldOut ? 'sold out' : money(cheapest.price_cents)}</span>`;
+      if (!soldOut) {
+        el.addEventListener('click', () => {
+          selectedSize = sizeKey;
+          document.querySelectorAll('.size-option').forEach(o => o.classList.remove('selected'));
+          el.classList.add('selected');
+          redrawFrame();
+          renderColorOptions();
+        });
+        if (!selectedVariant) { selectedSize = sizeKey; el.classList.add('selected'); }
+      }
+      container.appendChild(el);
+    });
   }
 
   function renderColorOptions() {
     const container = document.getElementById('color-options');
     container.innerHTML = '';
-    product.variants.forEach(v => {
+    const variantsForSize = product.variants.filter(v => v.size_label === selectedSize);
+    let pickedOne = false;
+
+    variantsForSize.forEach(v => {
       const soldOut = v.stock_qty <= 0;
       const el = document.createElement('div');
       el.className = 'color-option' + (soldOut ? ' disabled' : '');
       el.innerHTML = `<span class="swatch ${v.frame_color}"></span><span>${v.frame_color}${soldOut ? ' — sold out' : ''}</span>`;
       if (!soldOut) {
-        el.addEventListener('click', () => selectVariant(v, el));
-        if (!selectedVariant) selectVariant(v, el); // auto-select first available
+        el.addEventListener('click', () => selectVariant(v, el, '.color-option'));
+        if (!pickedOne) { selectVariant(v, el, '.color-option'); pickedOne = true; }
       }
       container.appendChild(el);
     });
@@ -454,6 +540,8 @@
         return;
       }
 
+      renderSizeOptions();
+      redrawFrame();
       renderColorOptions();
       updatePriceLine();
       initPaypal();

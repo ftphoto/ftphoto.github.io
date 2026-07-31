@@ -24,7 +24,7 @@ export async function onRequestPost({ request, env }) {
         purchase_units: [
           {
             reference_id: variantId,
-            description: `${variant.name} — ${variant.frame_color} frame`,
+            description: `${variant.name} — ${variant.size_label} — ${variant.frame_color} frame`,
             amount: { currency_code: "USD", value: amount },
           },
         ],

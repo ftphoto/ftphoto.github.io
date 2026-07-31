@@ -31,7 +31,7 @@ export function serverError(message = "Something went wrong") {
 export async function getVariant(db, variantId) {
   return db
     .prepare(
-      `SELECT v.id, v.product_id, v.frame_color, v.price_cents, v.stock_qty,
+      `SELECT v.id, v.product_id, v.frame_color, v.size_label, v.price_cents, v.stock_qty,
               p.name, p.location, p.image
        FROM variants v JOIN products p ON p.id = v.product_id
        WHERE v.id = ?`
