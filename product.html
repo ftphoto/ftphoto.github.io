@@ -73,7 +73,7 @@
 }
 
 /* Outer container: this IS the wood frame — its padding (set inline by
-   redrawFrame(), in %) is the visible 2" frame face, and its background
+   redrawFrame(), in %) is the visible 13/16" frame face, and its background
    is the wood/paint finish. Percent padding resolves against width for
    all four sides, so a single % gives a true uniform physical inset
    regardless of portrait/landscape orientation. Width is keyed only to
@@ -136,31 +136,31 @@
       var(--wood-hi-wash) 360deg);
 }
 
-.frame-outer.black-flat {
-  --wood-base: #2a2724;
-  --wood-hi-wash: rgba(255,255,255,0.07);
-  --wood-lo-wash: rgba(0,0,0,0.32);
-  --wood-grain-a: rgba(0,0,0,0.16);
-  --wood-grain-b: rgba(255,255,255,0.04);
+/* Whitewashed: a light grey-white wash over solid wood — grain shows
+   through, unlike a flat painted white. */
+.frame-outer.whitewashed {
+  --wood-base: #e6e2d8;
+  --wood-hi-wash: rgba(255,255,255,0.40);
+  --wood-lo-wash: rgba(90,80,60,0.10);
+  --wood-grain-a: rgba(120,110,90,0.10);
+  --wood-grain-b: rgba(255,255,255,0.12);
+  border: 1px solid #d8d3c5;
 }
 
-/* White Flat: a genuinely flat painted profile — no grain, just a
-   faint edge shadow for depth against the card background. */
-.frame-outer.white-flat {
-  --wood-base: #efece3;
-  --wood-hi-wash: rgba(255,255,255,0.35);
-  --wood-lo-wash: rgba(0,0,0,0.04);
-  --wood-grain-a: transparent;
-  --wood-grain-b: transparent;
-  border: 1px solid #dcdcdc;
+.frame-outer.black-walnut {
+  --wood-base: #2e2420;
+  --wood-hi-wash: rgba(255,255,255,0.06);
+  --wood-lo-wash: rgba(0,0,0,0.35);
+  --wood-grain-a: rgba(0,0,0,0.22);
+  --wood-grain-b: rgba(255,255,255,0.05);
 }
 
-.frame-outer.blonde-maple {
-  --wood-base: #d7b98a;
-  --wood-hi-wash: rgba(255,255,255,0.22);
-  --wood-lo-wash: rgba(94,62,26,0.22);
-  --wood-grain-a: rgba(120,80,40,0.14);
-  --wood-grain-b: rgba(255,240,210,0.10);
+.frame-outer.cherry {
+  --wood-base: #7a3d2c;
+  --wood-hi-wash: rgba(255,220,200,0.20);
+  --wood-lo-wash: rgba(60,20,10,0.28);
+  --wood-grain-a: rgba(50,20,12,0.20);
+  --wood-grain-b: rgba(230,170,140,0.12);
 }
 
 /* Hover effect */
@@ -290,17 +290,17 @@
     flex: 0 0 auto;
   }
 
-  .swatch.black-flat {
-    background: #171717;
-  }
-
-  .swatch.blonde-maple {
-    background: linear-gradient(135deg, #d7bf91, #c5a976);
-  }
-
-  .swatch.white-flat {
-    background: #fff;
+  .swatch.whitewashed {
+    background: #e6e2d8;
     border: 1px solid #ccc;
+  }
+
+  .swatch.black-walnut {
+    background: #2e2420;
+  }
+
+  .swatch.cherry {
+    background: #7a3d2c;
   }
 
   .qty-row {
@@ -583,7 +583,7 @@
     <a href="shop.html" class="back-link">&larr; all prints</a>
 
     <div class="frame-stage">
-      <div class="frame-outer black-flat orient-portrait" id="frame-outer">
+      <div class="frame-outer black-walnut orient-portrait" id="frame-outer">
         <div class="frame-mat">
           <div class="frame-window">
             <img id="pd-image" src="" alt="">
@@ -593,7 +593,7 @@
     </div>
 
     <div class="frame-dims" id="frame-dims">
-      framed 19.25&Prime; × 25.25&Prime; overall — 2&Prime; face, 3/4&Prime; depth
+      framed 19&Prime; × 25&Prime; overall — 13/16&Prime; face, 1 1/4&Prime; depth
     </div>
   </div>
 
@@ -607,16 +607,16 @@
     <div class="sizing-info">
       <div class="sizing-row">
         <span class="sizing-name">Small</span>
-        <span>12&Prime; × 18&Prime; photo — framed 19.25&Prime; × 25.25&Prime;</span>
+        <span>12&Prime; × 18&Prime; photo — framed 19&Prime; × 25&Prime;</span>
       </div>
 
       <div class="sizing-row">
         <span class="sizing-name">Medium</span>
-        <span>16&Prime; × 24&Prime; photo — framed 23.25&Prime; × 31.25&Prime;</span>
+        <span>16&Prime; × 24&Prime; photo — framed 23&Prime; × 31&Prime;</span>
       </div>
 
       <p class="sizing-note">
-        Every print includes a 2&Prime; white mat and your choice of frame, ready to hang. All frames are wood composite with a 2&Prime; profile and 3/4&Prime; depth.
+        Every print includes a 3&Prime; mat and your choice of frame, ready to hang. All frames are solid wood with a 13/16&Prime; profile and 1 1/4&Prime; depth.
       </p>
     </div>
 
@@ -738,19 +738,19 @@
 
   const SIZE_DIMS = {
     small: {
-      portrait:  { frameW: 19.25, frameH: 25.25 },
-      landscape: { frameW: 25.25, frameH: 19.25 }
+      portrait:  { frameW: 19, frameH: 25 },
+      landscape: { frameW: 25, frameH: 19 }
     },
     medium: {
-      portrait:  { frameW: 23.25, frameH: 31.25 },
-      landscape: { frameW: 31.25, frameH: 23.25 }
+      portrait:  { frameW: 23, frameH: 31 },
+      landscape: { frameW: 31, frameH: 23 }
     }
   };
 
   const FRAME_LABELS = {
-    'black-flat': 'Black Rustic',
-    'blonde-maple': 'Blonde Maple',
-    'white-flat': 'White Flat'
+    'whitewashed': 'Whitewashed',
+    'black-walnut': 'Black Walnut',
+    'cherry': 'Cherry'
   };
 
   function money(cents) {
@@ -825,8 +825,8 @@
     const frameOuter = document.getElementById('frame-outer');
     const frameMat = frameOuter.querySelector('.frame-mat');
 
-    const frameFace = 2;
-    const matVisible = 1.625;
+    const frameFace = 13/16;
+    const matVisible = 2 + 11/16;
 
     const framePct =
       (frameFace / d.frameW * 100).toFixed(3) + '%';
@@ -845,7 +845,7 @@
     frameMat.style.padding = matPct;
 
     document.getElementById('frame-dims').textContent =
-      `framed ${d.frameW}\u2033 × ${d.frameH}\u2033 overall — 2\u2033 face, 3/4\u2033 depth`;
+      `framed ${d.frameW}\u2033 × ${d.frameH}\u2033 overall — 13/16\u2033 face, 1 1/4\u2033 depth`;
   }
 
   function selectVariant(variant, el, groupSelector) {
@@ -859,9 +859,9 @@
     const frameOuter = document.getElementById('frame-outer');
 
     frameOuter.classList.remove(
-      'black-flat',
-      'blonde-maple',
-      'white-flat'
+      'whitewashed',
+      'black-walnut',
+      'cherry'
     );
 
     frameOuter.classList.add(variant.frame_color);
@@ -957,9 +957,9 @@
     let pickedOne = false;
 
     const frameOrder = [
-      'black-flat',
-      'blonde-maple',
-      'white-flat'
+      'whitewashed',
+      'black-walnut',
+      'cherry'
     ];
 
     variantsForSize
