@@ -59,54 +59,6 @@
     position: relative;
   }
 
-  .dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    display: none;
-    min-width: 160px;
-    background: #fff;
-    border: 1px solid #e8e8e8;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    padding: 0.25rem 0;
-    z-index: 100;
-  }
-
-  .dropdown.open {
-    display: block;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .nav-links li:hover .dropdown,
-    .nav-links li:focus-within .dropdown {
-      display: block;
-    }
-  }
-
-  .dropdown a {
-    display: block;
-    padding: 0.5rem 0.9rem;
-    font-size: 12px;
-    color: #111;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  .dropdown a:hover,
-  .dropdown a.active {
-    background: #111;
-    color: #fff;
-  }
-
-  .location-menu > a::after {
-    content: '▾';
-    display: inline-block;
-    margin-left: 0.35rem;
-    font-size: 0.8em;
-    vertical-align: middle;
-  }
-
   /* GALLERY */
   .gallery {
     max-width: 1100px;
@@ -245,11 +197,7 @@
   <a class="nav-name" href="./">hannah holzer</a>
 <ul class="nav-links">
   <li><a href="./">home</a></li>
-  <li><a href="shop.html">shop</a></li> 
-    <li class="location-menu">
-      <a href="#" aria-haspopup="true" aria-expanded="false">locations</a>
-      <div class="dropdown" id="locationNav" aria-label="Photo locations"></div>
-    </li>
+  <li><a href="shop.html">shop</a></li>
   </ul>
 </nav>
 
@@ -390,100 +338,6 @@
   function prev() { open((current - 1 + items.length) % items.length); }
   function next() { open((current + 1) % items.length); }
 
-  const locationNav = document.getElementById('locationNav');
-  const allLocationLabel = 'all';
-  const locations = Array.from(new Set(items.map(item => getLocationLabel(item.dataset.location)))).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-
-  function getLocationLabel(raw) {
-    const beforeDash = (raw || '').split('—')[0].trim();
-    if (!beforeDash) return '';
-    const commaIndex = beforeDash.lastIndexOf(',');
-    if (commaIndex !== -1) {
-      return beforeDash.slice(commaIndex + 1).trim();
-    }
-    const parts = beforeDash.split(/\s+/);
-    return parts.length > 1 ? parts[parts.length - 1] : beforeDash;
-  }
-
-  function getLocationFromHash() {
-    const hash = decodeURIComponent(window.location.hash.slice(1));
-    const match = hash.match(/^location=(.+)$/);
-    return match ? match[1] : allLocationLabel;
-  }
-
-  function updateHash(locationName) {
-    const hash = locationName && locationName !== allLocationLabel ? `location=${encodeURIComponent(locationName)}` : '';
-    history.replaceState(null, '', hash ? `#${hash}` : window.location.pathname + window.location.search);
-  }
-
-  function filterItems(locationName) {
-    const showAll = locationName === allLocationLabel;
-    items.forEach(item => {
-      const itemLocation = getLocationLabel(item.dataset.location);
-      item.style.display = showAll || itemLocation === locationName ? '' : 'none';
-    });
-  }
-
-  function renderLocationNav() {
-    locationNav.innerHTML = '';
-    const allLink = document.createElement('a');
-    allLink.href = '#';
-    allLink.dataset.location = allLocationLabel;
-    allLink.textContent = 'all';
-    allLink.addEventListener('click', handleLocationClick);
-    locationNav.appendChild(allLink);
-
-    locations.forEach(location => {
-      const link = document.createElement('a');
-      link.href = `#location=${encodeURIComponent(location)}`;
-      link.dataset.location = location;
-      link.textContent = location;
-      link.addEventListener('click', handleLocationClick);
-      locationNav.appendChild(link);
-    });
-  }
-
-  function handleLocationClick(event) {
-    event.preventDefault();
-    const locationName = event.currentTarget.dataset.location;
-    setActiveLocation(locationName);
-    closeLocationDropdown();
-  }
-
-  function closeLocationDropdown() {
-    locationNav.classList.remove('open');
-  }
-
-  function toggleLocationDropdown(event) {
-    event.preventDefault();
-    locationNav.classList.toggle('open');
-  }
-
-  function setActiveLocation(locationName) {
-    const links = Array.from(locationNav.querySelectorAll('a'));
-    links.forEach(link => link.classList.toggle('active', link.dataset.location === locationName));
-    filterItems(locationName);
-    updateHash(locationName);
-  }
-
-  function initLocationNav() {
-    renderLocationNav();
-    const initial = getLocationFromHash();
-    const available = initial === allLocationLabel || locations.includes(initial) ? initial : allLocationLabel;
-    setActiveLocation(available);
-  }
-
-
-  const locationMenuButton = document.querySelector('.location-menu > a');
-  locationMenuButton.addEventListener('click', toggleLocationDropdown);
-
-  document.addEventListener('click', (e) => {
-    const locationMenu = document.querySelector('.location-menu');
-    if (!locationMenu.contains(e.target)) {
-      closeLocationDropdown();
-    }
-  });
-
   items.forEach((item, i) => item.addEventListener('click', () => open(i)));
   document.getElementById('lb-close').addEventListener('click', close);
   document.getElementById('lb-prev').addEventListener('click', prev);
@@ -498,12 +352,6 @@
     if (e.key === 'ArrowRight') next();
   });
 
-  window.addEventListener('hashchange', () => {
-    const locationName = getLocationFromHash();
-    const available = locationName === allLocationLabel || locations.includes(locationName) ? locationName : allLocationLabel;
-    setActiveLocation(available);
-  });
-  initLocationNav();
 </script>
 </body>
 </html>
