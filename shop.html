@@ -179,16 +179,17 @@
       var(--wood-hi-wash) 360deg);
 }
 
-/* Bleached Maple: a light grey-white wash over solid wood — grain
-   shows through, unlike a flat painted white. CSS class/id stays
-   "whitewashed" to match the frame_color already stored in the DB. */
+/* Bleached Maple: pale warm cream with visible tan grain (matched
+   against a Framebridge reference swatch — much lighter/warmer than a
+   flat grey-white). CSS class/id stays "whitewashed" to match the
+   frame_color already stored in the DB. */
 .frame-outer.whitewashed {
-  --wood-base: #e6e2d8;
-  --wood-hi-wash: rgba(255,255,255,0.40);
-  --wood-lo-wash: rgba(90,80,60,0.10);
-  --wood-grain-a: rgba(120,110,90,0.10);
-  --wood-grain-b: rgba(255,255,255,0.12);
-  border: 1px solid #d8d3c5;
+  --wood-base: #f2e6d3;
+  --wood-hi-wash: rgba(255,255,255,0.45);
+  --wood-lo-wash: rgba(180,140,95,0.10);
+  --wood-grain-a: rgba(180,130,80,0.16);
+  --wood-grain-b: rgba(255,255,255,0.16);
+  border: 1px solid #e3d5bd;
 }
 
 .frame-outer.black-walnut {
@@ -199,12 +200,15 @@
   --wood-grain-b: rgba(255,255,255,0.05);
 }
 
+/* Cherry: medium honey-brown (matched against a Framebridge reference
+   swatch — notably lighter/more orange than the previous dark
+   mahogany-leaning tone). */
 .frame-outer.cherry {
-  --wood-base: #7a3d2c;
-  --wood-hi-wash: rgba(255,220,200,0.20);
-  --wood-lo-wash: rgba(60,20,10,0.28);
-  --wood-grain-a: rgba(50,20,12,0.20);
-  --wood-grain-b: rgba(230,170,140,0.12);
+  --wood-base: #c17f45;
+  --wood-hi-wash: rgba(255,230,200,0.25);
+  --wood-lo-wash: rgba(90,50,20,0.25);
+  --wood-grain-a: rgba(80,45,15,0.22);
+  --wood-grain-b: rgba(255,220,180,0.14);
 }
 
 .frame-mat {
