@@ -159,47 +159,49 @@
   padding: 5.96%; /* 1.625" mat reveal */
 }
 
-/* FRAME FINISHES — layered grain + mitered bevel shading so each
-   finish reads as a physical wood profile rather than a flat swatch. */
+/* FRAME FINISHES — a soft mitered-corner bevel (mimics a rounded
+   moulding profile) plus faint, slightly-irregular grain, all as low-
+   contrast translucent washes over a matte base tone. Two grain layers
+   at close-but-different angles/spacing keep it from reading as a
+   uniform repeating stripe. */
 .frame-outer {
   background-color: var(--wood-base);
   background-image:
-    repeating-linear-gradient(97deg,
-      var(--wood-grain-dark) 0px, var(--wood-grain-dark) 1px,
-      transparent 1px, transparent 3px,
-      var(--wood-grain-light) 3px, var(--wood-grain-light) 4px,
-      transparent 4px, transparent 8px),
+    repeating-linear-gradient(4deg,
+      var(--wood-grain-a) 0px, var(--wood-grain-a) 1px,
+      transparent 1px, transparent 5px),
+    repeating-linear-gradient(-2deg,
+      var(--wood-grain-b) 0px, var(--wood-grain-b) 1px,
+      transparent 1px, transparent 7px),
     conic-gradient(from 225deg at 50% 50%,
-      rgba(255,255,255,0.22), rgba(0,0,0,0.16) 90deg,
-      rgba(255,255,255,0.08) 180deg, rgba(0,0,0,0.22) 270deg,
-      rgba(255,255,255,0.22) 360deg),
-    linear-gradient(135deg, var(--wood-hi), var(--wood-base) 50%, var(--wood-lo));
-  background-blend-mode: overlay, soft-light, normal;
+      var(--wood-hi-wash) 0deg, transparent 90deg,
+      var(--wood-lo-wash) 180deg, transparent 270deg,
+      var(--wood-hi-wash) 360deg);
 }
 
 .frame-outer.black-flat {
-  --wood-base: #1b1b1a;
-  --wood-hi: #333230;
-  --wood-lo: #050505;
-  --wood-grain-dark: rgba(0,0,0,0.5);
-  --wood-grain-light: rgba(255,255,255,0.06);
+  --wood-base: #2a2724;
+  --wood-hi-wash: rgba(255,255,255,0.07);
+  --wood-lo-wash: rgba(0,0,0,0.32);
+  --wood-grain-a: rgba(0,0,0,0.16);
+  --wood-grain-b: rgba(255,255,255,0.04);
 }
 
 .frame-outer.white-flat {
-  --wood-base: #f4f1ea;
-  --wood-hi: #ffffff;
-  --wood-lo: #d9d4c6;
-  --wood-grain-dark: rgba(120,110,90,0.12);
-  --wood-grain-light: rgba(255,255,255,0.6);
+  --wood-base: #f6f5f2;
+  --wood-hi-wash: rgba(255,255,255,0.55);
+  --wood-lo-wash: rgba(0,0,0,0.05);
+  --wood-grain-a: rgba(0,0,0,0.025);
+  --wood-grain-b: rgba(0,0,0,0.02);
   border: 1px solid #dcdcdc;
 }
 
 .frame-outer.blonde-maple {
-  --wood-base: #c99b64;
-  --wood-hi: #eccf9c;
-  --wood-lo: #8f6537;
-  --wood-grain-dark: rgba(94,62,26,0.35);
-  --wood-grain-light: rgba(255,238,205,0.4);
+  --wood-base: #d7b98a;
+  --wood-hi-wash: rgba(255,255,255,0.22);
+  --wood-lo-wash: rgba(94,62,26,0.22);
+  --wood-grain-a: rgba(120,80,40,0.14);
+  --wood-grain-b: rgba(255,240,210,0.10);
 }
 
 .frame-mat {
