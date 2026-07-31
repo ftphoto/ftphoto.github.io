@@ -413,14 +413,14 @@
             : '';
 
         /*
-          Prefer White Flat, Small size, as the
+          Prefer Black Flat, Small size, as the
           default thumbnail if in stock.
         */
         const thumbVariant =
           inStock.find(
             v =>
               v.size_label === 'small' &&
-              v.frame_color === 'white-flat'
+              v.frame_color === 'black-flat'
           ) ||
           inStock[0] ||
           p.variants[0];
