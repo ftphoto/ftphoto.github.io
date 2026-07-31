@@ -1,0 +1,15 @@
+{
+  "name": "fallingtidephoto",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Falling Tide Photography — static site with Cloudflare Pages Functions",
+  "scripts": {
+    "build": "esbuild src/amplitude-init.js --bundle --minify --outfile=amplitude-init.js"
+  },
+  "dependencies": {
+    "@amplitude/unified": "^1.1.28"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
+}
