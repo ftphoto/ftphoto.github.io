@@ -82,7 +82,7 @@
     margin: 0 auto;
     padding: 1.5rem 2rem 5rem;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1px;
     background: #fff;
   }
@@ -103,7 +103,17 @@
   aspect-ratio: 1 / 1.05;
 }
 
+/* Sizing wrapper: holds width/aspect-ratio so .frame-outer's own
+   padding-percentage resolves against ITS containing block (this
+   wrapper's width) rather than .frame-card's full width. CSS percent
+   padding always resolves against the containing block's width, not
+   the padded element's own width — putting width AND padding on the
+   same element (the old bug) meant the padding was calculated against
+   the un-shrunk .frame-card width, inflating the frame/mat by 1/0.58
+   or 1/0.78x and throwing off the window's aspect ratio. */
 .frame-outer {
+  width: 100%;
+  height: 100%;
   box-shadow: 0 22px 40px rgba(0, 0, 0, 0.14);
 }
 
@@ -114,48 +124,60 @@
    and mat % = 2.6875in/innerFrameW give a true uniform physical inset
    regardless of orientation — these must NOT be swapped between
    portrait/landscape (that was the earlier bug). */
-.frame-outer.size-small.orient-portrait {
+.frame-size.size-small.orient-portrait {
   width: 58%;
   aspect-ratio: 19 / 25;
+}
+
+.frame-size.size-small.orient-portrait .frame-outer {
   padding: 4.28%; /* 13/16" frame */
 }
 
-.frame-outer.size-small.orient-portrait .frame-mat {
+.frame-size.size-small.orient-portrait .frame-mat {
   padding: 15.47%; /* 3" mat reveal (2.6875" precise) */
 }
 
 /* Small landscape: 25 x 19 */
-.frame-outer.size-small.orient-landscape {
+.frame-size.size-small.orient-landscape {
   width: 78%;
   aspect-ratio: 25 / 19;
+}
+
+.frame-size.size-small.orient-landscape .frame-outer {
   padding: 3.25%; /* 13/16" frame */
 }
 
-.frame-outer.size-small.orient-landscape .frame-mat {
+.frame-size.size-small.orient-landscape .frame-mat {
   padding: 11.50%; /* 3" mat reveal (2.6875" precise) */
 }
 
 /* ---- MEDIUM ---- */
 
 /* Medium portrait: 23 x 31 */
-.frame-outer.size-medium.orient-portrait {
+.frame-size.size-medium.orient-portrait {
   width: 58%;
   aspect-ratio: 23 / 31;
+}
+
+.frame-size.size-medium.orient-portrait .frame-outer {
   padding: 3.53%; /* 13/16" frame */
 }
 
-.frame-outer.size-medium.orient-portrait .frame-mat {
+.frame-size.size-medium.orient-portrait .frame-mat {
   padding: 12.57%; /* 3" mat reveal (2.6875" precise) */
 }
 
 /* Medium landscape: 31 x 23 */
-.frame-outer.size-medium.orient-landscape {
+.frame-size.size-medium.orient-landscape {
   width: 78%;
   aspect-ratio: 31 / 23;
+}
+
+.frame-size.size-medium.orient-landscape .frame-outer {
   padding: 2.62%; /* 13/16" frame */
 }
 
-.frame-outer.size-medium.orient-landscape .frame-mat {
+.frame-size.size-medium.orient-landscape .frame-mat {
   padding: 9.15%; /* 3" mat reveal (2.6875" precise) */
 }
 
@@ -313,7 +335,7 @@
 
   @media (max-width: 900px) {
     .product-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(1, 1fr);
     }
   }
 </style>
@@ -447,18 +469,19 @@
         a.innerHTML = `
           <div class="frame-card">
             <div class="
-              frame-outer
-              ${thumbVariant ? thumbVariant.frame_color : 'black-walnut'}
+              frame-size
               size-${thumbSize}
               orient-portrait
             ">
-              <div class="frame-mat">
-                <div class="frame-window">
-                  <img
-                    src="${p.image}"
-                    alt="${p.name}"
-                    loading="lazy"
-                  >
+              <div class="frame-outer ${thumbVariant ? thumbVariant.frame_color : 'black-walnut'}">
+                <div class="frame-mat">
+                  <div class="frame-window">
+                    <img
+                      src="${p.image}"
+                      alt="${p.name}"
+                      loading="lazy"
+                    >
+                  </div>
                 </div>
               </div>
             </div>
@@ -496,7 +519,7 @@
 
         const cardFrame =
           a.querySelector(
-            '.frame-outer'
+            '.frame-size'
           );
 
         const setOrientation = () => {

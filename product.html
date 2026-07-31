@@ -72,20 +72,31 @@
   aspect-ratio: 1 / 1.05;
 }
 
+/* Sizing wrapper: holds the width/aspect-ratio so #frame-outer's own
+   padding-percentage resolves against ITS containing block (this
+   wrapper's width) rather than .frame-stage's full width. CSS percent
+   padding always resolves against the containing block's width, not
+   the padded element's own width — putting width AND padding on the
+   same element (the old bug) meant the padding was calculated against
+   the un-shrunk .frame-stage width, inflating the frame/mat by
+   1/0.58 or 1/0.78x and throwing off the window's aspect ratio.
+   Width is keyed only to orientation (not size — small/medium share
+   the same aspect ratio closely enough that one width works for
+   both); redrawFrame() sets the exact aspect-ratio inline on this
+   wrapper so height auto-derives correctly. */
+.frame-size.orient-portrait { width: 58%; }
+.frame-size.orient-landscape { width: 78%; }
+
 /* Outer container: this IS the wood frame — its padding (set inline by
-   redrawFrame(), in %) is the visible 13/16" frame face, and its background
-   is the wood/paint finish. Percent padding resolves against width for
-   all four sides, so a single % gives a true uniform physical inset
-   regardless of portrait/landscape orientation. Width is keyed only to
-   orientation (not size — small/medium share the same aspect ratio
-   closely enough that one width works for both); redrawFrame() sets
-   the exact aspect-ratio inline so height auto-derives correctly. */
+   redrawFrame(), in %) is the visible 13/16" frame face, and its
+   background is the wood/paint finish. Now sized at 100%/100% of
+   .frame-size, so its padding-percentage correctly resolves against
+   its own true rendered width. */
 .frame-outer {
+  width: 100%;
+  height: 100%;
   box-shadow: 0 22px 40px rgba(0,0,0,0.14);
 }
-
-.frame-outer.orient-portrait { width: 58%; }
-.frame-outer.orient-landscape { width: 78%; }
 
 .frame-dims {
   margin-top: 1rem;
@@ -563,10 +574,6 @@
       gap: 2rem;
     }
 
-    .frame-outer {
-      width: 55%;
-    }
-
     .sizing-row {
       flex-direction: column;
       gap: 0.15rem;
@@ -589,10 +596,12 @@
     <a href="shop.html" class="back-link">&larr; all prints</a>
 
     <div class="frame-stage">
-      <div class="frame-outer black-walnut orient-portrait" id="frame-outer">
-        <div class="frame-mat">
-          <div class="frame-window">
-            <img id="pd-image" src="" alt="">
+      <div class="frame-size orient-portrait" id="frame-size">
+        <div class="frame-outer black-walnut" id="frame-outer">
+          <div class="frame-mat">
+            <div class="frame-window">
+              <img id="pd-image" src="" alt="">
+            </div>
           </div>
         </div>
       </div>
@@ -828,6 +837,7 @@
     const d =
       SIZE_DIMS[selectedSize][isLandscape ? 'landscape' : 'portrait'];
 
+    const frameSize = document.getElementById('frame-size');
     const frameOuter = document.getElementById('frame-outer');
     const frameMat = frameOuter.querySelector('.frame-mat');
 
@@ -843,10 +853,10 @@
     const matPct =
       (matVisible / innerFrameW * 100).toFixed(3) + '%';
 
-    frameOuter.classList.toggle('orient-landscape', isLandscape);
-    frameOuter.classList.toggle('orient-portrait', !isLandscape);
+    frameSize.classList.toggle('orient-landscape', isLandscape);
+    frameSize.classList.toggle('orient-portrait', !isLandscape);
 
-    frameOuter.style.aspectRatio = `${d.frameW} / ${d.frameH}`;
+    frameSize.style.aspectRatio = `${d.frameW} / ${d.frameH}`;
     frameOuter.style.padding = framePct;
     frameMat.style.padding = matPct;
 
