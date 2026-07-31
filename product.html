@@ -28,9 +28,29 @@
     z-index: 99;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
-  .nav-name { font-size: 13px; font-weight: 700; text-decoration: none; color: #111; letter-spacing: 0.01em; }
-  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
-  .nav-links a { font-size: 12px; color: #111; text-decoration: none; letter-spacing: 0.03em; transition: opacity 0.2s; }
+
+  .nav-name {
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    color: #111;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    color: #111;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s;
+  }
+
   .nav-links a:hover { opacity: 0.5; }
   .nav-links a.active { border-bottom: 1px solid #111; }
 
@@ -43,13 +63,15 @@
     gap: 3.5rem;
   }
 
-  /* Frame mockup — same real-proportion approach as shop.html:
-     0.5in trim + 2in mat + a 12x18 photo, framed 17x23.
-     Orientation flips the whole thing: landscape photos get a 23x17
-     frame instead. Because CSS padding % is always relative to the
-     box's WIDTH, portrait and landscape need different percentages to
-     represent the same physical inches — both are computed below and
-     swapped by JS once the photo's real aspect ratio is known. */
+  /*
+    Frame geometry:
+    Small  = 12x18 photo, 19.25x25.25 overall
+    Medium = 16x24 photo, 23.25x31.25 overall
+
+    Frame front profile = 2"
+    Frame depth = 3/4"
+    Visible mat = 1.625" per side
+  */
   .frame-stage {
     background: #f5f5f3;
     padding: 3rem 2.5rem;
@@ -57,20 +79,68 @@
     align-items: center;
     justify-content: center;
   }
+
   .frame-outer {
     width: 68%;
     box-shadow: 0 30px 55px rgba(0, 0, 0, 0.16);
     transition: background 0.2s, border-color 0.2s;
   }
-  .frame-outer.orient-portrait  { aspect-ratio: 17 / 23; padding: 2.941%; }
-  .frame-outer.orient-landscape { aspect-ratio: 23 / 17; padding: 2.174%; width: 90%; }
-  .frame-outer.black { background: #171717; }
-  .frame-outer.white { background: #fff; border: 1px solid #dcdcdc; }
-  .frame-mat { width: 100%; height: 100%; background: #fff; }
-  .frame-outer.orient-portrait .frame-mat  { padding: 11.765%; }
-  .frame-outer.orient-landscape .frame-mat { padding: 8.696%; }
-  .frame-window { width: 100%; height: 100%; overflow: hidden; }
-  .frame-window img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .frame-outer.orient-portrait {
+    aspect-ratio: 19.25 / 25.25;
+    padding: 10.390%;
+  }
+
+  .frame-outer.orient-landscape {
+    aspect-ratio: 25.25 / 19.25;
+    padding: 7.921%;
+    width: 90%;
+  }
+
+  .frame-outer.black-flat {
+    background: #171717;
+  }
+
+  .frame-outer.blonde-maple {
+    background: linear-gradient(
+      135deg,
+      #d7bf91,
+      #c5a976 45%,
+      #dfc99e
+    );
+  }
+
+  .frame-outer.white-flat {
+    background: #fff;
+    border: 1px solid #dcdcdc;
+  }
+
+  .frame-mat {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+  }
+
+  .frame-outer.orient-portrait .frame-mat {
+    padding: 10.656%;
+  }
+
+  .frame-outer.orient-landscape .frame-mat {
+    padding: 7.647%;
+  }
+
+  .frame-window {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .frame-window img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
   .frame-dims {
     text-align: center;
@@ -80,7 +150,13 @@
     margin-top: 0.9rem;
   }
 
-  .product-name { font-size: 18px; font-weight: 700; letter-spacing: 0.01em; margin-bottom: 0.3rem; }
+  .product-name {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.3rem;
+  }
+
   .featured-banner {
     display: inline-block;
     background: #111;
@@ -91,8 +167,20 @@
     padding: 0.35rem 0.6rem;
     margin-bottom: 0.8rem;
   }
-  .product-location { font-size: 12px; color: #888; font-style: italic; margin-bottom: 1.6rem; }
-  .product-description { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 2rem; }
+
+  .product-location {
+    font-size: 12px;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 1.6rem;
+  }
+
+  .product-description {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
 
   .section-label {
     font-size: 10px;
@@ -102,8 +190,13 @@
     margin-bottom: 0.7rem;
   }
 
-  /* Size choice */
-  .size-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.6rem; }
+  .size-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.6rem;
+  }
+
   .size-option {
     display: flex;
     justify-content: space-between;
@@ -114,23 +207,47 @@
     font-size: 12px;
     transition: border-color 0.2s, background 0.2s;
   }
+
   .size-option:hover { border-color: #ccc; }
   .size-option.selected { border-color: #111; background: #fafafa; }
   .size-option.disabled { opacity: 0.4; cursor: not-allowed; }
   .size-option .meta { font-size: 11px; color: #888; }
 
-  /* Static print & framing spec block */
-  .sizing-info { margin-bottom: 1.8rem; }
+  .sizing-info {
+    margin-bottom: 1.8rem;
+  }
+
   .sizing-row {
-    display: flex; justify-content: space-between;
-    font-size: 12px; color: #555; padding: 0.3rem 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 12px;
+    color: #555;
+    padding: 0.3rem 0;
     border-bottom: 1px solid #f2f2f2;
   }
-  .sizing-row .sizing-name { font-weight: 700; color: #111; }
-  .sizing-note { font-size: 11px; color: #999; font-style: italic; margin-top: 0.6rem; line-height: 1.6; }
 
-  /* Frame color choice */
-  .color-options { display: flex; gap: 0.6rem; margin-bottom: 1.6rem; }
+  .sizing-row .sizing-name {
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+  }
+
+  .sizing-note {
+    font-size: 11px;
+    color: #999;
+    font-style: italic;
+    margin-top: 0.6rem;
+    line-height: 1.6;
+  }
+
+  .color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.6rem;
+  }
+
   .color-option {
     display: flex;
     align-items: center;
@@ -141,90 +258,248 @@
     font-size: 12px;
     transition: border-color 0.2s, background 0.2s;
   }
+
   .color-option:hover { border-color: #ccc; }
   .color-option.selected { border-color: #111; background: #fafafa; }
   .color-option.disabled { opacity: 0.4; cursor: not-allowed; }
-  .swatch { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-  .swatch.black { background: #171717; }
-  .swatch.white { background: #fff; border: 1px solid #ccc; }
 
-  .qty-row { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.8rem; }
+  .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    flex: 0 0 auto;
+  }
+
+  .swatch.black-flat {
+    background: #171717;
+  }
+
+  .swatch.blonde-maple {
+    background: linear-gradient(135deg, #d7bf91, #c5a976);
+  }
+
+  .swatch.white-flat {
+    background: #fff;
+    border: 1px solid #ccc;
+  }
+
+  .qty-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.8rem;
+  }
+
   .qty-row select {
-    font-family: inherit; font-size: 12px; font-weight: 300;
-    padding: 0.4rem 0.6rem; border: 1px solid #e8e8e8; background: #fff; color: #111;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 300;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #e8e8e8;
+    background: #fff;
+    color: #111;
   }
 
-  .price-line { font-size: 16px; font-weight: 700; margin-bottom: 1.8rem; }
-  .price-line .unit-note { font-size: 11px; color: #888; font-weight: 300; margin-left: 0.4rem; }
+  .price-line {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 1.8rem;
+  }
 
-  .paypal-note { font-size: 11px; color: #888; margin-top: 0.6rem; font-style: italic; }
+  .price-line .unit-note {
+    font-size: 11px;
+    color: #888;
+    font-weight: 300;
+    margin-left: 0.4rem;
+  }
 
-  /* Confirmation screen */
+  .paypal-note {
+    font-size: 11px;
+    color: #888;
+    margin-top: 0.6rem;
+    font-style: italic;
+  }
+
   .confirm-check {
-    width: 34px; height: 34px; border-radius: 50%; background: #111; color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; margin-bottom: 1.1rem;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 1.1rem;
   }
-  .confirm-title { font-size: 16px; font-weight: 700; margin-bottom: 1.2rem; }
+
+  .confirm-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+  }
+
   .confirm-summary {
-    border-top: 1px solid #e8e8e8; border-bottom: 1px solid #e8e8e8;
-    padding: 1rem 0; margin-bottom: 0.9rem;
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 1rem 0;
+    margin-bottom: 0.9rem;
   }
+
   .confirm-summary .row {
-    display: flex; justify-content: space-between; font-size: 12px; padding: 0.25rem 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 12px;
+    padding: 0.25rem 0;
   }
+
   .confirm-summary .row .label { color: #888; }
-  .confirm-summary .row.total { font-weight: 700; margin-top: 0.4rem; }
-  .confirm-ref { font-size: 11px; color: #aaa; margin-bottom: 1.6rem; letter-spacing: 0.02em; }
-  .confirm-next p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 0.7rem; }
-  .confirm-shop-link {
-    display: inline-block; margin-top: 1rem; font-size: 12px; color: #111;
-    text-decoration: none; border-bottom: 1px solid #111; padding-bottom: 1px;
+  .confirm-summary .row.total {
+    font-weight: 700;
+    margin-top: 0.4rem;
   }
+
+  .confirm-ref {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 1.6rem;
+    letter-spacing: 0.02em;
+  }
+
+  .confirm-next p {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 0.7rem;
+  }
+
+  .confirm-shop-link {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 12px;
+    color: #111;
+    text-decoration: none;
+    border-bottom: 1px solid #111;
+    padding-bottom: 1px;
+  }
+
   .confirm-shop-link:hover { opacity: 0.6; }
 
-  .buyer-form { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.8rem; }
-  .buyer-form input {
-    font-family: inherit; font-size: 12px; font-weight: 300;
-    padding: 0.6rem 0.7rem; border: 1px solid #e8e8e8; background: #fff; color: #111;
+  .buyer-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1.8rem;
   }
-  .buyer-form input:focus { outline: none; border-color: #111; }
-  .form-row { display: flex; gap: 0.6rem; }
-  .form-row input { flex: 1; min-width: 0; }
 
-  .pay-tabs { display: flex; gap: 0; margin-bottom: 1.2rem; border-bottom: 1px solid #e8e8e8; }
-  .pay-tab {
-    flex: 1; text-align: center; font-size: 11px; letter-spacing: 0.05em;
-    padding: 0.6rem 0; cursor: pointer; color: #888;
-    border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s;
+  .buyer-form input {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 300;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid #e8e8e8;
+    background: #fff;
+    color: #111;
   }
-  .pay-tab.active { color: #111; border-color: #111; }
+
+  .buyer-form input:focus {
+    outline: none;
+    border-color: #111;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .form-row input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pay-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid #e8e8e8;
+  }
+
+  .pay-tab {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 0.6rem 0;
+    cursor: pointer;
+    color: #888;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .pay-tab.active {
+    color: #111;
+    border-color: #111;
+  }
 
   .pay-panel { display: none; }
   .pay-panel.active { display: block; }
 
-  #square-card-container { border: 1px solid #e8e8e8; padding: 0.8rem; margin-bottom: 0.8rem; min-height: 44px; }
-  #square-pay-btn {
-    width: 100%; background: #111; color: #fff; border: none; padding: 0.75rem;
-    font-family: inherit; font-size: 12px; letter-spacing: 0.04em; cursor: pointer; transition: opacity 0.2s;
+  #square-card-container {
+    border: 1px solid #e8e8e8;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    min-height: 44px;
   }
+
+  #square-pay-btn {
+    width: 100%;
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 0.75rem;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
   #square-pay-btn:hover { opacity: 0.85; }
   #square-pay-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .status-message { font-size: 11px; margin-top: 0.8rem; letter-spacing: 0.02em; }
+  .status-message {
+    font-size: 11px;
+    margin-top: 0.8rem;
+    letter-spacing: 0.02em;
+  }
+
   .status-message.error { color: #b33; }
   .status-message.success { color: #2a7a2a; }
 
   .sold-out-banner {
-    font-size: 12px; color: #b33; border: 1px solid #f0d0d0; background: #fff8f8;
-    padding: 0.8rem; margin-bottom: 1.5rem;
+    font-size: 12px;
+    color: #b33;
+    border: 1px solid #f0d0d0;
+    background: #fff8f8;
+    padding: 0.8rem;
+    margin-bottom: 1.5rem;
   }
 
   footer {
-    border-top: 1px solid #e8e8e8; padding: 1.4rem 2rem; display: flex; gap: 1.5rem;
-    font-size: 11px; color: #888;
+    border-top: 1px solid #e8e8e8;
+    padding: 1.4rem 2rem;
+    display: flex;
+    gap: 1.5rem;
+    font-size: 11px;
+    color: #888;
   }
-  footer a { color: #888; text-decoration: none; }
+
+  footer a {
+    color: #888;
+    text-decoration: none;
+  }
 
   .shop-note {
     max-width: 1040px;
@@ -233,7 +508,15 @@
     border-top: 1px solid #f0f0f0;
     padding-top: 1.6rem;
   }
-  .shop-note p { font-size: 11px; color: #999; font-style: italic; line-height: 1.7; margin-bottom: 0.4rem; }
+
+  .shop-note p {
+    font-size: 11px;
+    color: #999;
+    font-style: italic;
+    line-height: 1.7;
+    margin-bottom: 0.4rem;
+  }
+
   .shop-note a { color: #999; }
   .shop-note a:hover { color: #111; }
 
@@ -246,11 +529,23 @@
     margin-bottom: 1.2rem;
     transition: opacity 0.2s;
   }
+
   .back-link:hover { opacity: 0.6; }
 
   @media (max-width: 760px) {
-    .product { grid-template-columns: 1fr; gap: 2rem; }
-    .frame-outer { width: 55%; }
+    .product {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .frame-outer {
+      width: 55%;
+    }
+
+    .sizing-row {
+      flex-direction: column;
+      gap: 0.15rem;
+    }
   }
 </style>
 </head>
@@ -267,8 +562,9 @@
 <main class="product" id="product-root">
   <div>
     <a href="shop.html" class="back-link">&larr; all prints</a>
+
     <div class="frame-stage">
-      <div class="frame-outer black orient-portrait" id="frame-outer">
+      <div class="frame-outer black-flat orient-portrait" id="frame-outer">
         <div class="frame-mat">
           <div class="frame-window">
             <img id="pd-image" src="" alt="">
@@ -276,7 +572,10 @@
         </div>
       </div>
     </div>
-    <div class="frame-dims" id="frame-dims">framed 17&Prime; × 23&Prime; — 12&Prime; × 18&Prime; photo, 2&Prime; mat</div>
+
+    <div class="frame-dims" id="frame-dims">
+      framed 19.25&Prime; × 25.25&Prime; overall — 2&Prime; face, 3/4&Prime; depth
+    </div>
   </div>
 
   <div class="product-details">
@@ -285,10 +584,23 @@
     <div class="product-location" id="pd-location"></div>
 
     <div class="section-label">print &amp; framing</div>
+
     <div class="sizing-info">
-      <div class="sizing-row"><span class="sizing-name">Small</span><span>12&Prime; × 18&Prime; photo — framed 17&Prime; × 23&Prime;</span></div>
-      <div class="sizing-row"><span class="sizing-name">Medium</span><span>16&Prime; × 24&Prime; photo — framed 21&Prime; × 29&Prime;</span></div>
-      <p class="sizing-note">Every print includes a 2&Prime; white mat and a 0.5&Prime; black or white wood frame, ready to hang.</p>
+      <div class="sizing-row">
+        <span class="sizing-name">Small</span>
+        <span>12&Prime; × 18&Prime; photo — framed 19.25&Prime; × 25.25&Prime;</span>
+      </div>
+
+      <div class="sizing-row">
+        <span class="sizing-name">Medium</span>
+        <span>16&Prime; × 24&Prime; photo — framed 23.25&Prime; × 31.25&Prime;</span>
+      </div>
+
+      <p class="sizing-note">
+        Every print uses a 2&Prime; front-profile frame with 3/4&Prime; depth.
+        Frame options: Black Flat, Poly-Resin Blonde Maple (wood composite),
+        or Wood Composite White Flat.
+      </p>
     </div>
 
     <div class="section-label">description</div>
@@ -302,10 +614,11 @@
       <div class="section-label">size</div>
       <div class="size-options" id="size-options"></div>
 
-      <div class="section-label">frame color</div>
+      <div class="section-label">frame</div>
       <div class="color-options" id="color-options"></div>
 
       <div class="section-label">quantity</div>
+
       <div class="qty-row">
         <select id="qty-select">
           <option value="1">1</option>
@@ -319,7 +632,10 @@
 
       <div class="section-label">checkout</div>
       <div id="paypal-button-container"></div>
-      <p class="paypal-note">You'll enter your shipping address on PayPal's secure checkout page.</p>
+
+      <p class="paypal-note">
+        You'll enter your shipping address on PayPal's secure checkout page.
+      </p>
 
       <!-- Square card checkout is built and ready — set ENABLE_SQUARE = true
            below (and swap in your Square IDs) to turn it back on. -->
@@ -336,18 +652,35 @@
       <div class="confirm-title">Order confirmed</div>
       <div class="confirm-summary" id="confirm-summary"></div>
       <div class="confirm-ref" id="confirm-ref"></div>
+
       <div class="confirm-next">
-        <p>PayPal has emailed you a receipt, and your shipping address was sent along with the order.</p>
-        <p>Prints ship within 5–7 business days. Questions? Email <a href="mailto:fallingtidephoto@gmail.com">fallingtidephoto@gmail.com</a>.</p>
+        <p>
+          PayPal has emailed you a receipt, and your shipping address was sent
+          along with the order.
+        </p>
+        <p>
+          Prints ship within 5–7 business days. Questions? Email
+          <a href="mailto:fallingtidephoto@gmail.com">fallingtidephoto@gmail.com</a>.
+        </p>
       </div>
-      <a href="shop.html" class="confirm-shop-link">continue shopping &rarr;</a>
+
+      <a href="shop.html" class="confirm-shop-link">
+        continue shopping &rarr;
+      </a>
     </div>
   </div>
 </main>
 
 <div class="shop-note">
-  <p>Every print arrives framed and matted in museum-quality materials, ready to hang.</p>
-  <p>Interested in a bulk order, or a size not listed here? Email <a href="mailto:fallingtidephoto@gmail.com">fallingtidephoto@gmail.com</a> — happy to help.</p>
+  <p>
+    Every print arrives framed and matted in museum-quality materials,
+    ready to hang.
+  </p>
+  <p>
+    Interested in a bulk order, or a size not listed here?
+    Email <a href="mailto:fallingtidephoto@gmail.com">fallingtidephoto@gmail.com</a>
+    — happy to help.
+  </p>
 </div>
 
 <footer>
@@ -379,18 +712,37 @@
   let isLandscape = false;
   let squareCard = null;
 
-  // Real dimensions per size, in inches — trim (0.5") + mat (2") = 2.5"
-  // border on every side, for both sizes, so the same percentage-of-width
-  // trick works for all four size × orientation combinations.
-  const SIZE_LABELS = { small: 'Small — 12\u2033×18\u2033', medium: 'Medium — 16\u2033×24\u2033' };
-  const SIZE_ORDER = ['small', 'medium'];
-  const SIZE_DIMS = {
-    small:  { portrait: { frameW: 17, frameH: 23 }, landscape: { frameW: 23, frameH: 17 } },
-    medium: { portrait: { frameW: 21, frameH: 29 }, landscape: { frameW: 29, frameH: 21 } },
+  const SIZE_LABELS = {
+    small: 'Small — 12\u2033×18\u2033',
+    medium: 'Medium — 16\u2033×24\u2033'
   };
 
-  function money(cents) { return '$' + (cents / 100).toFixed(2); }
-  function qty() { return parseInt(document.getElementById('qty-select').value, 10); }
+  const SIZE_ORDER = ['small', 'medium'];
+
+  const SIZE_DIMS = {
+    small: {
+      portrait:  { frameW: 19.25, frameH: 25.25 },
+      landscape: { frameW: 25.25, frameH: 19.25 }
+    },
+    medium: {
+      portrait:  { frameW: 23.25, frameH: 31.25 },
+      landscape: { frameW: 31.25, frameH: 23.25 }
+    }
+  };
+
+  const FRAME_LABELS = {
+    'black-flat': 'Black Flat',
+    'blonde-maple': 'Poly-Resin Blonde Maple (wood composite)',
+    'white-flat': 'Wood Composite White Flat'
+  };
+
+  function money(cents) {
+    return '$' + (cents / 100).toFixed(2);
+  }
+
+  function qty() {
+    return parseInt(document.getElementById('qty-select').value, 10);
+  }
 
   function setStatus(message, type) {
     const el = document.getElementById('status-message');
@@ -400,93 +752,174 @@
 
   function updatePriceLine() {
     if (!selectedVariant) return;
+
     const total = selectedVariant.price_cents * qty();
+
     document.getElementById('price-line').innerHTML =
-      money(total) + (qty() > 1 ? `<span class="unit-note">(${money(selectedVariant.price_cents)} each)</span>` : '');
+      money(total) +
+      (
+        qty() > 1
+          ? `<span class="unit-note">(${money(selectedVariant.price_cents)} each)</span>`
+          : ''
+      );
   }
 
   function showConfirmation(orderRef) {
     const total = selectedVariant.price_cents * qty();
+
     document.getElementById('confirm-summary').innerHTML = `
-      <div class="row"><span>${product.name}</span><span>${qty()} × ${money(selectedVariant.price_cents)}</span></div>
-      <div class="row"><span class="label">location</span><span>${product.location}</span></div>
-      <div class="row"><span class="label">size</span><span>${SIZE_LABELS[selectedVariant.size_label]}</span></div>
-      <div class="row"><span class="label">frame</span><span>${selectedVariant.frame_color}</span></div>
-      <div class="row total"><span>total</span><span>${money(total)}</span></div>
+      <div class="row">
+        <span>${product.name}</span>
+        <span>${qty()} × ${money(selectedVariant.price_cents)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">location</span>
+        <span>${product.location}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">size</span>
+        <span>${SIZE_LABELS[selectedVariant.size_label]}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">frame</span>
+        <span>${FRAME_LABELS[selectedVariant.frame_color] || selectedVariant.frame_color}</span>
+      </div>
+
+      <div class="row total">
+        <span>total</span>
+        <span>${money(total)}</span>
+      </div>
     `;
-    document.getElementById('confirm-ref').textContent = orderRef ? `order ref: ${orderRef}` : '';
+
+    document.getElementById('confirm-ref').textContent =
+      orderRef ? `order ref: ${orderRef}` : '';
+
     document.getElementById('purchase-block').style.display = 'none';
     document.getElementById('confirmation-view').style.display = 'block';
   }
 
-  // Redraws the frame mockup for the current size + orientation. Padding
-  // is expressed as % of width (how CSS padding % always resolves), using
-  // inches/frameWidthInches — that's why the same formula works whether
-  // the frame is 17", 21", 23", or 29" wide.
   function redrawFrame() {
-    const d = SIZE_DIMS[selectedSize][isLandscape ? 'landscape' : 'portrait'];
+    const d =
+      SIZE_DIMS[selectedSize][isLandscape ? 'landscape' : 'portrait'];
+
     const frameOuter = document.getElementById('frame-outer');
     const frameMat = frameOuter.querySelector('.frame-mat');
-    const trimPct = (0.5 / d.frameW * 100).toFixed(3) + '%';
-    const matPct = (2 / d.frameW * 100).toFixed(3) + '%';
+
+    const frameFace = 2;
+    const matVisible = 1.625;
+
+    const framePct =
+      (frameFace / d.frameW * 100).toFixed(3) + '%';
+
+    const innerFrameW =
+      d.frameW - (frameFace * 2);
+
+    const matPct =
+      (matVisible / innerFrameW * 100).toFixed(3) + '%';
 
     frameOuter.style.aspectRatio = `${d.frameW} / ${d.frameH}`;
-    frameOuter.style.padding = trimPct;
+    frameOuter.style.padding = framePct;
     frameMat.style.padding = matPct;
 
     document.getElementById('frame-dims').textContent =
-      `framed ${d.frameW}\u2033 × ${d.frameH}\u2033 overall`;
+      `framed ${d.frameW}\u2033 × ${d.frameH}\u2033 overall — 2\u2033 face, 3/4\u2033 depth`;
   }
 
   function selectVariant(variant, el, groupSelector) {
     selectedVariant = variant;
-    document.querySelectorAll(groupSelector).forEach(o => o.classList.remove('selected'));
+
+    document.querySelectorAll(groupSelector)
+      .forEach(o => o.classList.remove('selected'));
+
     el.classList.add('selected');
+
     const frameOuter = document.getElementById('frame-outer');
-    frameOuter.classList.remove('black', 'white');
+
+    frameOuter.classList.remove(
+      'black-flat',
+      'blonde-maple',
+      'white-flat'
+    );
+
     frameOuter.classList.add(variant.frame_color);
+
     updatePriceLine();
   }
 
-  // Detects the photo's real aspect ratio once it loads so the frame can
-  // flip between portrait and landscape proportions to match.
   function applyOrientation() {
     const img = document.getElementById('pd-image');
+
     function decide() {
       isLandscape = img.naturalWidth > img.naturalHeight;
       redrawFrame();
     }
-    if (img.complete && img.naturalWidth) decide();
-    else img.addEventListener('load', decide);
+
+    if (img.complete && img.naturalWidth) {
+      decide();
+    } else {
+      img.addEventListener('load', decide);
+    }
   }
 
   function renderSizeOptions() {
     const container = document.getElementById('size-options');
     container.innerHTML = '';
-    // Always show Small before Medium, regardless of query ordering.
-    const sizesPresent = SIZE_ORDER.filter(s => product.variants.some(v => v.size_label === s));
+
+    const sizesPresent =
+      SIZE_ORDER.filter(
+        s => product.variants.some(v => v.size_label === s)
+      );
 
     sizesPresent.forEach(sizeKey => {
-      const variantsForSize = product.variants.filter(v => v.size_label === sizeKey);
-      const inStockForSize = variantsForSize.filter(v => v.stock_qty > 0);
+      const variantsForSize =
+        product.variants.filter(v => v.size_label === sizeKey);
+
+      const inStockForSize =
+        variantsForSize.filter(v => v.stock_qty > 0);
+
       const soldOut = inStockForSize.length === 0;
-      const cheapest = inStockForSize.length
-        ? inStockForSize.reduce((a, b) => a.price_cents < b.price_cents ? a : b)
-        : variantsForSize[0];
+
+      const cheapest =
+        inStockForSize.length
+          ? inStockForSize.reduce(
+              (a, b) => a.price_cents < b.price_cents ? a : b
+            )
+          : variantsForSize[0];
 
       const el = document.createElement('div');
-      el.className = 'size-option' + (soldOut ? ' disabled' : '');
-      el.innerHTML = `<span>${SIZE_LABELS[sizeKey] || sizeKey}</span><span class="meta">${soldOut ? 'sold out' : money(cheapest.price_cents)}</span>`;
+
+      el.className =
+        'size-option' + (soldOut ? ' disabled' : '');
+
+      el.innerHTML = `
+        <span>${SIZE_LABELS[sizeKey] || sizeKey}</span>
+        <span class="meta">
+          ${soldOut ? 'sold out' : money(cheapest.price_cents)}
+        </span>
+      `;
+
       if (!soldOut) {
         el.addEventListener('click', () => {
           selectedSize = sizeKey;
-          document.querySelectorAll('.size-option').forEach(o => o.classList.remove('selected'));
+
+          document.querySelectorAll('.size-option')
+            .forEach(o => o.classList.remove('selected'));
+
           el.classList.add('selected');
+
           redrawFrame();
           renderColorOptions();
         });
-        if (!selectedVariant) { selectedSize = sizeKey; el.classList.add('selected'); }
+
+        if (!selectedVariant) {
+          selectedSize = sizeKey;
+          el.classList.add('selected');
+        }
       }
+
       container.appendChild(el);
     });
   }
@@ -494,20 +927,55 @@
   function renderColorOptions() {
     const container = document.getElementById('color-options');
     container.innerHTML = '';
-    const variantsForSize = product.variants.filter(v => v.size_label === selectedSize);
+
+    const variantsForSize =
+      product.variants.filter(v => v.size_label === selectedSize);
+
     let pickedOne = false;
 
-    variantsForSize.forEach(v => {
-      const soldOut = v.stock_qty <= 0;
-      const el = document.createElement('div');
-      el.className = 'color-option' + (soldOut ? ' disabled' : '');
-      el.innerHTML = `<span class="swatch ${v.frame_color}"></span><span>${v.frame_color}${soldOut ? ' — sold out' : ''}</span>`;
-      if (!soldOut) {
-        el.addEventListener('click', () => selectVariant(v, el, '.color-option'));
-        if (!pickedOne) { selectVariant(v, el, '.color-option'); pickedOne = true; }
-      }
-      container.appendChild(el);
-    });
+    const frameOrder = [
+      'black-flat',
+      'blonde-maple',
+      'white-flat'
+    ];
+
+    variantsForSize
+      .slice()
+      .sort(
+        (a, b) =>
+          frameOrder.indexOf(a.frame_color) -
+          frameOrder.indexOf(b.frame_color)
+      )
+      .forEach(v => {
+        const soldOut = v.stock_qty <= 0;
+
+        const el = document.createElement('div');
+
+        el.className =
+          'color-option' + (soldOut ? ' disabled' : '');
+
+        el.innerHTML = `
+          <span class="swatch ${v.frame_color}"></span>
+          <span>
+            ${FRAME_LABELS[v.frame_color] || v.frame_color}
+            ${soldOut ? ' — sold out' : ''}
+          </span>
+        `;
+
+        if (!soldOut) {
+          el.addEventListener(
+            'click',
+            () => selectVariant(v, el, '.color-option')
+          );
+
+          if (!pickedOne) {
+            selectVariant(v, el, '.color-option');
+            pickedOne = true;
+          }
+        }
+
+        container.appendChild(el);
+      });
   }
 
   async function loadProduct() {
@@ -515,28 +983,55 @@
       setStatus('no product specified.', 'error');
       return;
     }
+
     try {
-      const res = await fetch(`/api/products/${encodeURIComponent(productId)}`);
+      const res =
+        await fetch(`/api/products/${encodeURIComponent(productId)}`);
+
       if (!res.ok) throw new Error('not found');
+
       product = await res.json();
 
       document.getElementById('pd-image').src = product.image;
       document.getElementById('pd-image').alt = product.name;
-      applyOrientation();
-      document.getElementById('pd-location').textContent = product.location;
-      document.getElementById('pd-name').textContent = product.name;
-      if (product.featured_badge) {
-        const badge = document.getElementById('pd-badge');
-        badge.textContent = product.featured_badge;
-        badge.style.display = 'inline-block';
-      }
-      document.getElementById('pd-description').textContent = product.description || '';
-      document.title = `hannah holzer – ${product.name}`;
 
-      const anyInStock = product.variants.some(v => v.stock_qty > 0);
+      applyOrientation();
+
+      document.getElementById('pd-location').textContent =
+        product.location;
+
+      document.getElementById('pd-name').textContent =
+        product.name;
+
+      if (product.featured_badge) {
+        const badge =
+          document.getElementById('pd-badge');
+
+        badge.textContent =
+          product.featured_badge;
+
+        badge.style.display =
+          'inline-block';
+      }
+
+      document.getElementById('pd-description').textContent =
+        product.description || '';
+
+      document.title =
+        `hannah holzer – ${product.name}`;
+
+      const anyInStock =
+        product.variants.some(v => v.stock_qty > 0);
+
       if (!anyInStock) {
-        document.getElementById('sold-out-banner').style.display = 'block';
-        document.getElementById('purchase-block').style.display = 'none';
+        document.getElementById(
+          'sold-out-banner'
+        ).style.display = 'block';
+
+        document.getElementById(
+          'purchase-block'
+        ).style.display = 'none';
+
         return;
       }
 
@@ -545,92 +1040,219 @@
       renderColorOptions();
       updatePriceLine();
       initPaypal();
-      if (ENABLE_SQUARE) initSquare();
+
+      if (ENABLE_SQUARE) {
+        initSquare();
+      }
+
     } catch (err) {
-      setStatus('could not load this print.', 'error');
+      setStatus(
+        'could not load this print.',
+        'error'
+      );
     }
   }
 
-  document.getElementById('qty-select').addEventListener('change', updatePriceLine);
+  document
+    .getElementById('qty-select')
+    .addEventListener(
+      'change',
+      updatePriceLine
+    );
 
   // ---- PayPal ----
+
   let paypalValidationFailed = false;
 
   function initPaypal() {
     if (!window.paypal) return;
+
     paypal.Buttons({
-      style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'paypal' },
+      style: {
+        layout: 'vertical',
+        color: 'black',
+        shape: 'rect',
+        label: 'paypal'
+      },
+
       createOrder: async () => {
-        const res = await fetch('/api/paypal/create-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ variantId: selectedVariant.id, qty: qty() }),
-        });
+        const res =
+          await fetch(
+            '/api/paypal/create-order',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type':
+                  'application/json'
+              },
+              body: JSON.stringify({
+                variantId:
+                  selectedVariant.id,
+                qty: qty()
+              }),
+            }
+          );
+
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'could not start checkout');
+
+        if (!res.ok) {
+          throw new Error(
+            data.error ||
+            'could not start checkout'
+          );
+        }
+
         return data.id;
       },
+
       onApprove: async (data) => {
         setStatus('confirming payment…');
-        const res = await fetch('/api/paypal/capture-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            orderId: data.orderID,
-            variantId: selectedVariant.id,
-            qty: qty(),
-          }),
-        });
+
+        const res =
+          await fetch(
+            '/api/paypal/capture-order',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type':
+                  'application/json'
+              },
+              body: JSON.stringify({
+                orderId: data.orderID,
+                variantId:
+                  selectedVariant.id,
+                qty: qty()
+              }),
+            }
+          );
+
         const result = await res.json();
-        if (!res.ok) { setStatus(result.error || 'payment could not be completed.', 'error'); return; }
+
+        if (!res.ok) {
+          setStatus(
+            result.error ||
+            'payment could not be completed.',
+            'error'
+          );
+          return;
+        }
+
         showConfirmation(data.orderID);
       },
-      onError: () => setStatus('something went wrong with paypal checkout. please try again.', 'error'),
+
+      onError: () =>
+        setStatus(
+          'something went wrong with paypal checkout. please try again.',
+          'error'
+        ),
+
     }).render('#paypal-button-container');
   }
 
-  // ---- Square (disabled by default — see ENABLE_SQUARE above) ----
+  // ---- Square ----
+
   async function initSquare() {
     if (!window.Square) return;
+
     try {
-      const payments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
-      squareCard = await payments.card();
-      await squareCard.attach('#square-card-container');
-      document.getElementById('panel-square').style.display = 'block';
+      const payments =
+        window.Square.payments(
+          SQUARE_APP_ID,
+          SQUARE_LOCATION_ID
+        );
+
+      squareCard =
+        await payments.card();
+
+      await squareCard.attach(
+        '#square-card-container'
+      );
+
+      document.getElementById(
+        'panel-square'
+      ).style.display = 'block';
+
     } catch (err) {
-      document.getElementById('square-card-container').textContent = 'card payment unavailable right now.';
+      document.getElementById(
+        'square-card-container'
+      ).textContent =
+        'card payment unavailable right now.';
     }
   }
 
-  document.getElementById('square-pay-btn').addEventListener('click', async () => {
-    if (!squareCard) return;
-    const btn = document.getElementById('square-pay-btn');
-    btn.disabled = true;
-    setStatus('processing payment…');
-    try {
-      const result = await squareCard.tokenize();
-      if (result.status !== 'OK') {
-        setStatus('card details could not be verified. please check and try again.', 'error');
-        btn.disabled = false;
-        return;
+  document
+    .getElementById('square-pay-btn')
+    .addEventListener(
+      'click',
+      async () => {
+        if (!squareCard) return;
+
+        const btn =
+          document.getElementById(
+            'square-pay-btn'
+          );
+
+        btn.disabled = true;
+        setStatus('processing payment…');
+
+        try {
+          const result =
+            await squareCard.tokenize();
+
+          if (result.status !== 'OK') {
+            setStatus(
+              'card details could not be verified. please check and try again.',
+              'error'
+            );
+
+            btn.disabled = false;
+            return;
+          }
+
+          const res =
+            await fetch(
+              '/api/square/pay',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type':
+                    'application/json'
+                },
+                body: JSON.stringify({
+                  sourceId:
+                    result.token,
+                  variantId:
+                    selectedVariant.id,
+                  qty: qty()
+                }),
+              }
+            );
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            setStatus(
+              data.error ||
+              'payment could not be completed.',
+              'error'
+            );
+
+            btn.disabled = false;
+            return;
+          }
+
+          showConfirmation(null);
+
+        } catch (err) {
+          setStatus(
+            'something went wrong. please try again.',
+            'error'
+          );
+
+          btn.disabled = false;
+        }
       }
-      const res = await fetch('/api/square/pay', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sourceId: result.token,
-          variantId: selectedVariant.id,
-          qty: qty(),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setStatus(data.error || 'payment could not be completed.', 'error'); btn.disabled = false; return; }
-      showConfirmation(null);
-    } catch (err) {
-      setStatus('something went wrong. please try again.', 'error');
-      btn.disabled = false;
-    }
-  });
+    );
 
   loadProduct();
 </script>
