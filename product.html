@@ -643,7 +643,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="product-details">
     <div class="featured-banner" id="pd-badge" style="display:none;"></div>
-    <div class="product-name" id="pd-name"></div>
+    <h1 class="product-name" id="pd-name"></h1>
     <div class="product-location" id="pd-location"></div>
 
     <div class="section-label">print &amp; framing</div>
@@ -765,7 +765,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const SQUARE_LOCATION_ID = 'YOUR_SQUARE_LOCATION_ID';
 
   const params = new URLSearchParams(window.location.search);
-  const productId = params.get('id');
+  const pathMatch = window.location.pathname.match(/^\/prints\/([^/]+)\/?$/);
+  const productId = pathMatch ? decodeURIComponent(pathMatch[1]) : params.get('id');
 
   let product = null;
   let selectedVariant = null;
