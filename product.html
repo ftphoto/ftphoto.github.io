@@ -658,31 +658,39 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     color: #111;
   }
 
-  /* Same wood-frame mockup as the shop grid (.frame-outer / .frame-mat /
-     .frame-window, defined above) — fixed percentages here instead of
-     the hero's JS-computed ones, which is precise enough for a small
-     thumbnail and keeps this module dependency-free from redrawFrame(). */
-  .related-frame {
-    aspect-ratio: 4 / 5;
+  /* Ported verbatim from shop.html's .frame-card / .frame-size.size-X.orient-Y
+     rules, so a print's related-prints thumbnail is pixel-identical to its
+     shop grid card — same size class, same precise per-size frame/mat inset
+     percentages, same live orientation detection (see setRelatedOrientation
+     below), rather than the hero's fixed-percentage/always-portrait mockup. */
+  .related-item .frame-card {
+    background: #f5f5f3;
+    padding: 1.6rem 1.1rem 1.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f5f5f3;
-    padding: 10%;
+    aspect-ratio: 1 / 1.05;
     margin-bottom: 0.6rem;
   }
 
-  .related-frame .frame-outer {
-    padding: 5%;
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
-  }
+  .related-item .frame-size.size-small.orient-portrait { width: 58%; aspect-ratio: 19 / 25; }
+  .related-item .frame-size.size-small.orient-portrait .frame-outer { padding: 4.28%; }
+  .related-item .frame-size.size-small.orient-portrait .frame-mat { padding: 15.47%; }
 
-  .related-frame .frame-mat {
-    padding: 9%;
-  }
+  .related-item .frame-size.size-small.orient-landscape { width: 78%; aspect-ratio: 25 / 19; }
+  .related-item .frame-size.size-small.orient-landscape .frame-outer { padding: 3.25%; }
+  .related-item .frame-size.size-small.orient-landscape .frame-mat { padding: 11.50%; }
+
+  .related-item .frame-size.size-medium.orient-portrait { width: 58%; aspect-ratio: 23 / 31; }
+  .related-item .frame-size.size-medium.orient-portrait .frame-outer { padding: 3.53%; }
+  .related-item .frame-size.size-medium.orient-portrait .frame-mat { padding: 12.57%; }
+
+  .related-item .frame-size.size-medium.orient-landscape { width: 78%; aspect-ratio: 31 / 23; }
+  .related-item .frame-size.size-medium.orient-landscape .frame-outer { padding: 2.62%; }
+  .related-item .frame-size.size-medium.orient-landscape .frame-mat { padding: 9.15%; }
 
   .related-item:hover .frame-outer {
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 26px 46px rgba(0, 0, 0, 0.18);
   }
 
   .related-item span {
@@ -1476,7 +1484,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
     );
 
+  function setRelatedOrientation() {
+    document.querySelectorAll('.related-item').forEach(item => {
+      const img = item.querySelector('.frame-window img');
+      const frame = item.querySelector('.frame-size');
+      if (!img || !frame) return;
+
+      const apply = () => {
+        const isLandscape = img.naturalWidth > img.naturalHeight;
+        frame.classList.toggle('orient-landscape', isLandscape);
+        frame.classList.toggle('orient-portrait', !isLandscape);
+      };
+
+      if (img.complete && img.naturalWidth) {
+        apply();
+      } else {
+        img.addEventListener('load', apply);
+      }
+    });
+  }
+
   loadProduct();
+  setRelatedOrientation();
 </script>
 </body>
 </html>

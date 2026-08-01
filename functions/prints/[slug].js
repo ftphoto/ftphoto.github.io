@@ -62,6 +62,33 @@ export async function onRequestGet({ request, env, params }) {
     .bind(params.slug, product.location)
     .all();
 
+  let relatedVariantsByProduct = {};
+  if (related.length) {
+    const placeholders = related.map(() => "?").join(",");
+    const { results: relatedVariants } = await env.DB.prepare(
+      `SELECT product_id, size_label, frame_color, stock_qty FROM variants
+       WHERE product_id IN (${placeholders})`
+    )
+      .bind(...related.map((r) => r.id))
+      .all();
+    for (const v of relatedVariants) {
+      (relatedVariantsByProduct[v.product_id] ||= []).push(v);
+    }
+  }
+
+  // Same "prefer Black Walnut, Small, in stock" pick shop.html's grid uses,
+  // so a print's related-prints thumbnail matches its shop card exactly.
+  function pickThumbVariant(productId) {
+    const vs = relatedVariantsByProduct[productId] || [];
+    const inStock = vs.filter((v) => v.stock_qty > 0);
+    return (
+      inStock.find((v) => v.size_label === "small" && v.frame_color === "black-walnut") ||
+      inStock[0] ||
+      vs[0] ||
+      null
+    );
+  }
+
   const templateRes = await env.ASSETS.fetch(new URL("/product.html", request.url));
   let html = await templateRes.text();
 
@@ -114,18 +141,23 @@ export async function onRequestGet({ request, env, params }) {
   const relatedHtml = related.length
     ? `<div class="section-label">more prints</div>\n<div class="related-grid">\n` +
       related
-        .map(
-          (r) =>
+        .map((r) => {
+          const thumb = pickThumbVariant(r.id);
+          const size = thumb ? thumb.size_label : "small";
+          const frameColor = thumb ? thumb.frame_color : "black-walnut";
+          return (
             `<a class="related-item" href="/prints/${encodeURIComponent(r.id)}">` +
-            `<div class="related-frame">` +
-            `<div class="frame-outer black-walnut">` +
+            `<div class="frame-card">` +
+            `<div class="frame-size size-${escapeHtml(size)} orient-portrait">` +
+            `<div class="frame-outer ${escapeHtml(frameColor)}">` +
             `<div class="frame-mat">` +
             `<div class="frame-window">` +
             `<img src="/${escapeHtml(r.image)}" alt="${escapeHtml(r.name)} — fine art print, ${escapeHtml(r.location)}" loading="lazy">` +
-            `</div></div></div></div>` +
+            `</div></div></div></div></div>` +
             `<span>${escapeHtml(r.name)}</span>` +
             `</a>`
-        )
+          );
+        })
         .join("\n") +
       `\n</div>`
     : "";
