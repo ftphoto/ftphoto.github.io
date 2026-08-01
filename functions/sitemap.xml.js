@@ -1,7 +1,7 @@
 // Dynamic sitemap: static pages plus one <url> per active print, generated
 // from D1 so it never drifts from what's actually in the catalog.
 
-const SITE_URL = "https://fallingtidephoto.com";
+import { SITE_URL, productUrl } from "./_lib.js";
 
 const STATIC_PAGES = [
   { path: "/", priority: "1.0" },
@@ -23,14 +23,12 @@ function urlEntry(loc, priority, lastmod) {
 
 export async function onRequestGet({ env }) {
   const { results: products } = await env.DB.prepare(
-    `SELECT id, updated_at FROM products WHERE active = 1`
+    `SELECT name, location, updated_at FROM products WHERE active = 1`
   ).all();
 
   const entries = [
     ...STATIC_PAGES.map((p) => urlEntry(`${SITE_URL}${p.path}`, p.priority)),
-    ...products.map((p) =>
-      urlEntry(`${SITE_URL}/prints/${encodeURIComponent(p.id)}`, "0.8", p.updated_at)
-    ),
+    ...products.map((p) => urlEntry(productUrl(p), "0.8", p.updated_at)),
   ];
 
   const xml =

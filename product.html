@@ -140,6 +140,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   text-align: center;
 }
 
+/* Two views of the print: the framed mockup, then the bare photo.
+   Desktop just stacks them (plain block flow, no rule needed here) —
+   see the mobile media query below for the swipeable version. */
+.photo-only {
+  margin-top: 2.4rem;
+}
+
+.photo-only img {
+  width: 100%;
+  display: block;
+}
+
 /* MAT BOARD — padding (set inline by redrawFrame()) is the 1.625" reveal */
 .frame-mat {
   width: 100%;
@@ -710,6 +722,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       flex-direction: column;
       gap: 0.15rem;
     }
+
+    /* Swipe between the framed mockup and the bare photo instead of
+       stacking both and doubling the scroll length on a small screen. */
+    .product-media {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 1rem;
+    }
+
+    .media-slide {
+      flex: 0 0 100%;
+      min-width: 0;
+      scroll-snap-align: start;
+    }
+
+    .photo-only {
+      margin-top: 0;
+    }
   }
 </style>
 </head>
@@ -752,20 +784,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span class="crumb-current" id="pd-breadcrumb-current"></span>
     </nav>
 
-    <div class="frame-stage">
-      <div class="frame-size orient-portrait" id="frame-size">
-        <div class="frame-outer black-walnut" id="frame-outer">
-          <div class="frame-mat">
-            <div class="frame-window">
-              <img id="pd-image" src="" alt="">
+    <div class="product-media">
+      <div class="media-slide">
+        <div class="frame-stage">
+          <div class="frame-size orient-portrait" id="frame-size">
+            <div class="frame-outer black-walnut" id="frame-outer">
+              <div class="frame-mat">
+                <div class="frame-window">
+                  <img id="pd-image" src="" alt="">
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="frame-dims" id="frame-dims">
-      framed 19&Prime; × 25&Prime; overall — 13/16&Prime; face, 1 1/4&Prime; depth
+        <div class="frame-dims" id="frame-dims">
+          framed 19&Prime; × 25&Prime; overall — 13/16&Prime; face, 1 1/4&Prime; depth
+        </div>
+      </div>
+
+      <div class="media-slide">
+        <div class="photo-only">
+          <div class="section-label">the photograph</div>
+          <img id="pd-image-plain" src="" alt="">
+        </div>
+      </div>
     </div>
   </div>
 
@@ -894,9 +937,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const SQUARE_APP_ID = 'YOUR_SQUARE_APP_ID';
   const SQUARE_LOCATION_ID = 'YOUR_SQUARE_LOCATION_ID';
 
+  // The URL is /{country}/{print-name-slug} — not the internal product id —
+  // so the server embeds the real id as window.__PRODUCT_ID__ rather than
+  // this script trying to derive it from the path. Falls back to the old
+  // ?id= query param for direct product.html access with no server render.
   const params = new URLSearchParams(window.location.search);
-  const pathMatch = window.location.pathname.match(/^\/prints\/([^/]+)\/?$/);
-  const productId = pathMatch ? decodeURIComponent(pathMatch[1]) : params.get('id');
+  const productId = window.__PRODUCT_ID__ || params.get('id');
 
   let product = null;
   let selectedVariant = null;
@@ -1194,6 +1240,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       document.getElementById('pd-image').src = '/' + product.image;
       document.getElementById('pd-image').alt =
         `${product.name} — fine art print, ${product.location}`;
+
+      document.getElementById('pd-image-plain').src = '/' + product.image;
+      document.getElementById('pd-image-plain').alt =
+        `${product.name} — the photograph, unframed, ${product.location}`;
 
       applyOrientation();
 

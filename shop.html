@@ -441,6 +441,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return '$' + (cents / 100).toFixed(0);
   }
 
+  // Mirrors functions/_lib.js's slugify() — must stay identical so a
+  // product card's href always matches the URL the server actually renders.
+  function slugify(str) {
+    return String(str)
+      .toLowerCase()
+      .replace(/'/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
   async function loadProducts() {
     const grid = document.getElementById('product-grid');
 
@@ -518,7 +528,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           'product-card';
 
         a.href =
-          `/prints/${encodeURIComponent(p.id)}`;
+          `/${slugify(p.location)}/${slugify(p.name)}`;
 
         a.innerHTML = `
           <div class="frame-card">
