@@ -1,0 +1,14 @@
+{
+  "black-walnut": {
+    "template": "mockups/templates/black-walnut.jpg",
+    "rect": { "x": 0, "y": 0, "width": 0, "height": 0 }
+  },
+  "cherry": {
+    "template": "mockups/templates/cherry.jpg",
+    "rect": { "x": 0, "y": 0, "width": 0, "height": 0 }
+  },
+  "whitewashed": {
+    "template": "mockups/templates/whitewashed.jpg",
+    "rect": { "x": 0, "y": 0, "width": 0, "height": 0 }
+  }
+}

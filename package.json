@@ -4,12 +4,14 @@
   "private": true,
   "description": "Falling Tide Photography — static site with Cloudflare Pages Functions",
   "scripts": {
-    "build": "esbuild src/amplitude-init.js --bundle --minify --outfile=amplitude-init.js"
+    "build": "esbuild src/amplitude-init.js --bundle --minify --outfile=amplitude-init.js",
+    "mockup": "node scripts/compose-mockup.mjs"
   },
   "dependencies": {
     "@amplitude/unified": "^1.1.28"
   },
   "devDependencies": {
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "sharp": "^0.35.3"
   }
 }

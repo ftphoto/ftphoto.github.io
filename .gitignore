@@ -1,1 +1,11 @@
 node_modules/
+
+# Frame mockup templating (see mockups/README.md) — supplier source photos
+# and generated output aren't committed: the source photos may be the
+# frame supplier's copyrighted product photography, and the output is
+# regenerated from them, not authored here.
+mockups/templates/*
+!mockups/templates/.gitkeep
+mockups/templates.json
+mockups/output/*
+!mockups/output/.gitkeep
