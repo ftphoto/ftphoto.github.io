@@ -65,7 +65,17 @@ export async function onRequestGet({ request, env, params }) {
     (p) => slugify(p.location) === params.country && slugify(p.name) === params.slug
   );
 
-  if (!product) return notFound();
+  if (!product) {
+    // This route matches any two-segment path, which can collide with a
+    // real static asset (e.g. /images/howth.jpg parses as country="images",
+    // slug="howth.jpg"). _routes.json excludes the known static directories
+    // from ever reaching this function, but this fallback is cheap
+    // insurance against any path that isn't a product and isn't excluded
+    // there either — try the real static asset before giving up.
+    const assetRes = await env.ASSETS.fetch(request);
+    if (assetRes.status !== 404) return assetRes;
+    return notFound();
+  }
 
   const { results: variants } = await env.DB.prepare(
     `SELECT id, size_label, frame_color, price_cents, stock_qty
