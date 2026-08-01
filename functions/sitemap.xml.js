@@ -16,19 +16,20 @@ function escapeXml(str) {
     .replace(/>/g, "&gt;");
 }
 
-function urlEntry(loc, priority) {
-  return `  <url>\n    <loc>${escapeXml(loc)}</loc>\n    <priority>${priority}</priority>\n  </url>`;
+function urlEntry(loc, priority, lastmod) {
+  const lastmodTag = lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "";
+  return `  <url>\n    <loc>${escapeXml(loc)}</loc>${lastmodTag}\n    <priority>${priority}</priority>\n  </url>`;
 }
 
 export async function onRequestGet({ env }) {
   const { results: products } = await env.DB.prepare(
-    `SELECT id FROM products WHERE active = 1`
+    `SELECT id, updated_at FROM products WHERE active = 1`
   ).all();
 
   const entries = [
     ...STATIC_PAGES.map((p) => urlEntry(`${SITE_URL}${p.path}`, p.priority)),
     ...products.map((p) =>
-      urlEntry(`${SITE_URL}/prints/${encodeURIComponent(p.id)}`, "0.8")
+      urlEntry(`${SITE_URL}/prints/${encodeURIComponent(p.id)}`, "0.8", p.updated_at)
     ),
   ];
 
