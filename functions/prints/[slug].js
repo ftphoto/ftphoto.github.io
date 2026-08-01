@@ -117,7 +117,12 @@ export async function onRequestGet({ request, env, params }) {
         .map(
           (r) =>
             `<a class="related-item" href="/prints/${encodeURIComponent(r.id)}">` +
+            `<div class="related-frame">` +
+            `<div class="frame-outer black-walnut">` +
+            `<div class="frame-mat">` +
+            `<div class="frame-window">` +
             `<img src="/${escapeHtml(r.image)}" alt="${escapeHtml(r.name)} — fine art print, ${escapeHtml(r.location)}" loading="lazy">` +
+            `</div></div></div></div>` +
             `<span>${escapeHtml(r.name)}</span>` +
             `</a>`
         )
