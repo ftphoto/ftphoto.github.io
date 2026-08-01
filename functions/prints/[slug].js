@@ -28,6 +28,26 @@ function availability(variant) {
     : "https://schema.org/OutOfStock";
 }
 
+const SIZE_WORDS = { small: "Small", medium: "Medium" };
+
+// Cheapest in-stock variant's size — the size a buyer actually lands on
+// first — so the title can front-load a real size instead of naming none.
+function startingSize(variants) {
+  const pool = variants.filter((v) => v.stock_qty > 0);
+  const from = pool.length ? pool : variants;
+  if (!from.length) return "small";
+  return from.reduce((a, b) => (a.price_cents <= b.price_cents ? a : b)).size_label;
+}
+
+// Each product.description is written as scene-sentence + framing-sentence;
+// the first sentence alone is a complete, unique-per-print thought, which
+// keeps the meta description close to the ~155-char target without an
+// arbitrary mid-sentence cut.
+function firstSentence(text) {
+  const idx = text.indexOf(". ");
+  return idx === -1 ? text : text.slice(0, idx + 1);
+}
+
 export async function onRequestGet({ request, env, params }) {
   const product = await env.DB.prepare(
     `SELECT id, name, location, image, description, featured_badge
@@ -95,10 +115,11 @@ export async function onRequestGet({ request, env, params }) {
   const canonicalUrl = `${SITE_URL}/prints/${encodeURIComponent(product.id)}`;
   const imageUrl = new URL(product.image, `${SITE_URL}/`).href;
 
-  const seoTitle = `${product.name} — Fine Art Print, ${product.location} | Falling Tide Photo`;
+  const sizeWord = SIZE_WORDS[startingSize(variants)] || "Small";
+  const seoTitle = `${product.name} — ${sizeWord} Framed Fine Art Print, ${product.location} | Falling Tide Photo`;
   const seoDescription = product.description
-    ? `${product.description} Archival fine art print, framed and matted — ${product.location}.`
-    : `Fine art print from ${product.location}, archival printed and framed — Falling Tide Photo.`;
+    ? `${firstSentence(product.description)} Archival fine art print, made to order — ${product.location}.`
+    : `Fine art print from ${product.location}, archival printed and made to order — Falling Tide Photo.`;
 
   html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(seoTitle)}</title>`);
   html = replaceMetaContent(html, "meta-description", seoDescription);
