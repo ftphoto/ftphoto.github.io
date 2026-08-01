@@ -53,6 +53,15 @@ export async function onRequestGet({ request, env, params }) {
     .bind(params.slug)
     .all();
 
+  const { results: related } = await env.DB.prepare(
+    `SELECT id, name, image, location FROM products
+     WHERE active = 1 AND id != ?
+     ORDER BY (location = ?) DESC, sort_order DESC, name ASC
+     LIMIT 4`
+  )
+    .bind(params.slug, product.location)
+    .all();
+
   const templateRes = await env.ASSETS.fetch(new URL("/product.html", request.url));
   let html = await templateRes.text();
 
@@ -97,6 +106,39 @@ export async function onRequestGet({ request, env, params }) {
     );
   }
 
+  html = html.replace(
+    '<span class="crumb-current" id="pd-breadcrumb-current"></span>',
+    `<span class="crumb-current" id="pd-breadcrumb-current">${escapeHtml(product.name)}</span>`
+  );
+
+  const relatedHtml = related.length
+    ? `<div class="section-label">more prints</div>\n<div class="related-grid">\n` +
+      related
+        .map(
+          (r) =>
+            `<a class="related-item" href="/prints/${encodeURIComponent(r.id)}">` +
+            `<img src="/${escapeHtml(r.image)}" alt="${escapeHtml(r.name)} — fine art print, ${escapeHtml(r.location)}" loading="lazy">` +
+            `<span>${escapeHtml(r.name)}</span>` +
+            `</a>`
+        )
+        .join("\n") +
+      `\n</div>`
+    : "";
+  html = html.replace(
+    '<div class="related-prints" id="related-prints"></div>',
+    `<div class="related-prints" id="related-prints">${relatedHtml}</div>`
+  );
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Shop", item: `${SITE_URL}/shop.html` },
+      { "@type": "ListItem", position: 3, name: product.name, item: canonicalUrl },
+    ],
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -118,7 +160,8 @@ export async function onRequestGet({ request, env, params }) {
 
   const extraHead =
     `<link rel="canonical" href="${canonicalUrl}">\n` +
-    `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>\n`;
+    `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>\n` +
+    `<script type="application/ld+json">${JSON.stringify(breadcrumbJsonLd)}</script>\n`;
 
   html = html.replace("</head>", `${extraHead}</head>`);
 

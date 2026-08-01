@@ -602,7 +602,67 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   .back-link:hover { opacity: 0.6; }
 
+  .breadcrumbs {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    margin-bottom: 1.2rem;
+  }
+
+  .breadcrumbs a {
+    color: #888;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .breadcrumbs a:hover { opacity: 0.6; }
+
+  .breadcrumbs .crumb-sep {
+    color: #ccc;
+  }
+
+  .breadcrumbs .crumb-current {
+    color: #111;
+  }
+
+  .related-prints {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem 2.5rem;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .related-item {
+    display: block;
+    text-decoration: none;
+    color: #111;
+  }
+
+  .related-item img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 0.5rem;
+    background: #f5f5f3;
+  }
+
+  .related-item span {
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+
   @media (max-width: 760px) {
+    .related-grid { grid-template-columns: repeat(2, 1fr); }
+
     .product {
       grid-template-columns: 1fr;
       gap: 2rem;
@@ -646,7 +706,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <main class="product" id="product-root">
   <div>
-    <a href="/shop.html" class="back-link">&larr; all prints</a>
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="crumb-sep" aria-hidden="true">/</span>
+      <a href="/shop.html">Shop</a>
+      <span class="crumb-sep" aria-hidden="true">/</span>
+      <span class="crumb-current" id="pd-breadcrumb-current"></span>
+    </nav>
 
     <div class="frame-stage">
       <div class="frame-size orient-portrait" id="frame-size">
@@ -755,6 +821,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 </main>
+
+<div class="related-prints" id="related-prints"></div>
 
 <div class="shop-note">
   <p>
@@ -1095,6 +1163,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         product.location;
 
       document.getElementById('pd-name').textContent =
+        product.name;
+
+      document.getElementById('pd-breadcrumb-current').textContent =
         product.name;
 
       if (product.featured_badge) {
