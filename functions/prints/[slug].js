@@ -1,9 +1,11 @@
 // Server-rendered product page: /prints/{product-id}
 //
-// Fetches product.html as a static asset and rewrites the <head> tags
-// (title, meta description, OG, canonical, Product JSON-LD) with real
-// values before the response ever reaches the browser, so search engines
-// see a complete <head> without executing product.html's client-side JS.
+// Fetches product.html as a static asset and rewrites both the <head>
+// tags (title, meta description, OG, canonical, Product JSON-LD) and the
+// visible body content (image, name, location, description) with real
+// values before the response ever reaches the browser. Everything else
+// on the page (price, size/frame selection, checkout) stays client-
+// rendered — that's interactive commerce state, not indexable content.
 
 const SITE_URL = "https://fallingtidephoto.com";
 
@@ -68,6 +70,32 @@ export async function onRequestGet({ request, env, params }) {
   html = replaceMetaContent(html, "og-description", seoDescription);
   html = replaceMetaContent(html, "og-image", imageUrl);
   html = replaceMetaContent(html, "og-url", canonicalUrl);
+
+  // Visible body content — root-relative image path since this route sits
+  // one segment deeper than where product.html normally resolves "images/...".
+  const imageAlt = `${product.name} — fine art print, ${product.location}`;
+  html = html.replace(
+    '<img id="pd-image" src="" alt="">',
+    `<img id="pd-image" src="/${escapeHtml(product.image)}" alt="${escapeHtml(imageAlt)}">`
+  );
+  html = html.replace(
+    '<h1 class="product-name" id="pd-name"></h1>',
+    `<h1 class="product-name" id="pd-name">${escapeHtml(product.name)}</h1>`
+  );
+  html = html.replace(
+    '<div class="product-location" id="pd-location"></div>',
+    `<div class="product-location" id="pd-location">${escapeHtml(product.location)}</div>`
+  );
+  html = html.replace(
+    '<div class="product-description" id="pd-description"></div>',
+    `<div class="product-description" id="pd-description">${escapeHtml(product.description || "")}</div>`
+  );
+  if (product.featured_badge) {
+    html = html.replace(
+      '<div class="featured-banner" id="pd-badge" style="display:none;"></div>',
+      `<div class="featured-banner" id="pd-badge">${escapeHtml(product.featured_badge)}</div>`
+    );
+  }
 
   const jsonLd = {
     "@context": "https://schema.org",
