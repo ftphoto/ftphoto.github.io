@@ -140,17 +140,98 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   text-align: center;
 }
 
-/* Two views of the print: the framed mockup, then the bare photo.
-   Desktop just stacks them (plain block flow, no rule needed here) —
-   see the mobile media query below for the swipeable version. */
-.photo-only {
-  margin-top: 2.4rem;
+/* Two views of the print: the framed mockup, then the bare photo — a
+   single-row carousel (scroll-snap) at every screen size, moved between
+   via the overlaid arrow buttons or by swipe/scroll directly. */
+.media-wrap {
+  position: relative;
 }
+
+.product-media {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.product-media::-webkit-scrollbar {
+  display: none;
+}
+
+.media-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.media-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.2rem;
+  height: 2.2rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  font-size: 15px;
+  color: #111;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  z-index: 5;
+}
+
+.media-nav:hover { opacity: 1; }
+.media-prev { left: 0.6rem; }
+.media-next { right: 0.6rem; }
 
 .photo-only img {
   width: 100%;
   display: block;
+  cursor: zoom-in;
 }
+
+/* PHOTO LIGHTBOX — same pattern as the homepage gallery's, sized down to
+   a single image (no prev/next between photos, just close). */
+.photo-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.96);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.photo-lightbox.open { display: flex; }
+
+.photo-lightbox img {
+  max-width: min(90vw, 1200px);
+  max-height: 90vh;
+  object-fit: contain;
+  display: block;
+  cursor: zoom-out;
+}
+
+.photo-lightbox-close {
+  position: fixed;
+  top: 1.4rem;
+  right: 1.8rem;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #111;
+  line-height: 1;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  font-weight: 300;
+}
+
+.photo-lightbox-close:hover { opacity: 1; }
 
 /* MAT BOARD — padding (set inline by redrawFrame()) is the 1.625" reveal */
 .frame-mat {
@@ -722,26 +803,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       flex-direction: column;
       gap: 0.15rem;
     }
-
-    /* Swipe between the framed mockup and the bare photo instead of
-       stacking both and doubling the scroll length on a small screen. */
-    .product-media {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: 1rem;
-    }
-
-    .media-slide {
-      flex: 0 0 100%;
-      min-width: 0;
-      scroll-snap-align: start;
-    }
-
-    .photo-only {
-      margin-top: 0;
-    }
   }
 </style>
 </head>
@@ -784,31 +845,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span class="crumb-current" id="pd-breadcrumb-current"></span>
     </nav>
 
-    <div class="product-media">
-      <div class="media-slide">
-        <div class="frame-stage">
-          <div class="frame-size orient-portrait" id="frame-size">
-            <div class="frame-outer black-walnut" id="frame-outer">
-              <div class="frame-mat">
-                <div class="frame-window">
-                  <img id="pd-image" src="" alt="">
+    <div class="media-wrap">
+      <div class="product-media" id="product-media">
+        <div class="media-slide">
+          <div class="frame-stage">
+            <div class="frame-size orient-portrait" id="frame-size">
+              <div class="frame-outer black-walnut" id="frame-outer">
+                <div class="frame-mat">
+                  <div class="frame-window">
+                    <img id="pd-image" src="" alt="">
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <div class="frame-dims" id="frame-dims">
+            framed 19&Prime; × 25&Prime; overall — 13/16&Prime; face, 1 1/4&Prime; depth
+          </div>
         </div>
 
-        <div class="frame-dims" id="frame-dims">
-          framed 19&Prime; × 25&Prime; overall — 13/16&Prime; face, 1 1/4&Prime; depth
+        <div class="media-slide">
+          <div class="photo-only">
+            <img id="pd-image-plain" src="" alt="">
+          </div>
         </div>
       </div>
 
-      <div class="media-slide">
-        <div class="photo-only">
-          <div class="section-label">the photograph</div>
-          <img id="pd-image-plain" src="" alt="">
-        </div>
-      </div>
+      <button class="media-nav media-prev" id="media-prev" aria-label="Previous view" type="button">&#8592;</button>
+      <button class="media-nav media-next" id="media-next" aria-label="Next view" type="button">&#8594;</button>
     </div>
   </div>
 
@@ -921,6 +986,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <a href="mailto:fallingtidephoto@gmail.com">mail</a>
   <a href="https://www.instagram.com/fallingtidephoto/">instagram</a>
 </footer>
+
+<div class="photo-lightbox" id="photo-lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="photo-lightbox-close" id="photo-lightbox-close" aria-label="Close" type="button">&#x2715;</button>
+  <img id="photo-lightbox-img" src="" alt="">
+</div>
 
 <!--
   PayPal live Client ID is already set below. If you ever need to change
@@ -1554,8 +1624,59 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
   }
 
+  function setUpMediaCarousel() {
+    const media = document.getElementById('product-media');
+    const slides = media ? Array.from(media.querySelectorAll('.media-slide')) : [];
+    const prevBtn = document.getElementById('media-prev');
+    const nextBtn = document.getElementById('media-next');
+    if (!media || slides.length < 2 || !prevBtn || !nextBtn) return;
+
+    function currentIndex() {
+      return Math.round(media.scrollLeft / media.clientWidth);
+    }
+
+    function goTo(index) {
+      const clamped = Math.max(0, Math.min(slides.length - 1, index));
+      media.scrollTo({ left: slides[clamped].offsetLeft, behavior: 'smooth' });
+    }
+
+    prevBtn.addEventListener('click', () => goTo(currentIndex() - 1));
+    nextBtn.addEventListener('click', () => goTo(currentIndex() + 1));
+  }
+
+  function setUpPhotoLightbox() {
+    const lb = document.getElementById('photo-lightbox');
+    const lbImg = document.getElementById('photo-lightbox-img');
+    const lbClose = document.getElementById('photo-lightbox-close');
+    const plainImg = document.getElementById('pd-image-plain');
+    if (!lb || !lbImg || !lbClose || !plainImg) return;
+
+    function open() {
+      lbImg.src = plainImg.src;
+      lbImg.alt = plainImg.alt;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    plainImg.addEventListener('click', open);
+    lbImg.addEventListener('click', close);
+    lbClose.addEventListener('click', close);
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+
+    document.addEventListener('keydown', e => {
+      if (lb.classList.contains('open') && e.key === 'Escape') close();
+    });
+  }
+
   loadProduct();
   setRelatedOrientation();
+  setUpMediaCarousel();
+  setUpPhotoLightbox();
 </script>
 </body>
 </html>
