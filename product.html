@@ -187,8 +187,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 .media-prev { left: 0.6rem; }
 .media-next { right: 0.6rem; }
 
+/* Reuses .frame-stage's box (background, padding, aspect-ratio) via the
+   shared class on the element itself, so both carousel slides are the
+   same height — which is what keeps the arrows centered on the image
+   in both, rather than only the framed mockup. */
 .photo-only img {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   display: block;
   cursor: zoom-in;
 }
@@ -866,7 +874,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
 
         <div class="media-slide">
-          <div class="photo-only">
+          <div class="frame-stage photo-only">
             <img id="pd-image-plain" src="" alt="">
           </div>
         </div>
