@@ -28,9 +28,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="og:description" content="Hannah Holzer is a landscape and ocean photographer drawn to coastlines from Oregon to Ireland, Italy, and Australia — shooting for the quiet feeling of standing at the edge of the water.">
 <meta property="og:url" content="https://fallingtidephoto.com/about/">
 <meta name="twitter:card" content="summary">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.png">
+<link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @font-face {
+    font-family: 'Anton';
+    src: url('../fonts/anton-latin.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
 
   body {
     background: #fff;
@@ -43,9 +56,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   /* NAV */
   nav {
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 1.2rem 1.5rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 1.1rem 1.5rem 0.9rem;
     border-bottom: 1px solid #e8e8e8;
     position: sticky;
     top: 0;
@@ -53,12 +67,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     z-index: 99;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
-  .nav-name {
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-    color: #111;
-    letter-spacing: 0.01em;
+  .nav-logo {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+  }
+  .nav-logo svg {
+    height: 28px;
+    width: auto;
+    display: block;
   }
   .nav-links {
     display: flex;
@@ -311,7 +328,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <nav>
-  <a class="nav-name" href="../">hannah holzer</a>
+  <a class="nav-logo" href="../" aria-label="Hannah Holzer — home">
+    <svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <defs>
+        <clipPath id="navLogoTop"><path d="M0,96 C70,86 110,106 180,96 C250,86 300,106 370,96 C440,86 490,106 560,96 C600,90 620,94 640,92 L640,0 L0,0 Z"/></clipPath>
+        <clipPath id="navLogoBot"><path d="M0,96 C70,86 110,106 180,96 C250,86 300,106 370,96 C440,86 490,106 560,96 C600,90 620,94 640,92 L640,150 L0,150 Z"/></clipPath>
+        <linearGradient id="navLogoGrad" x1="0" y1="0" x2="640" y2="0">
+          <stop offset="0" stop-color="#1c3d4a"/>
+          <stop offset="1" stop-color="#6f97a3"/>
+        </linearGradient>
+      </defs>
+      <g font-family="Anton" font-size="118" text-anchor="middle">
+        <text x="320" y="118" clip-path="url(#navLogoTop)" fill="#111" textLength="600" lengthAdjust="spacingAndGlyphs">HANNAH HOLZER</text>
+        <text x="320" y="118" clip-path="url(#navLogoBot)" fill="url(#navLogoGrad)" textLength="600" lengthAdjust="spacingAndGlyphs">HANNAH HOLZER</text>
+      </g>
+      <path d="M0,96 C70,86 110,106 180,96 C250,86 300,106 370,96 C440,86 490,106 560,96 C600,90 620,94 640,92" fill="none" stroke="#fff" stroke-width="2" opacity="0.95"/>
+    </svg>
+  </a>
 <ul class="nav-links">
   <li><a href="./">home</a></li>
   <li><a href="shop.html">shop</a></li> 
