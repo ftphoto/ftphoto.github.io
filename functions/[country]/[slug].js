@@ -139,6 +139,7 @@ export async function onRequestGet({ request, env, params }) {
   html = replaceMetaContent(html, "og-title", seoTitle);
   html = replaceMetaContent(html, "og-description", seoDescription);
   html = replaceMetaContent(html, "og-image", imageUrl);
+  html = replaceMetaContent(html, "twitter-image", imageUrl);
   html = replaceMetaContent(html, "og-url", canonicalUrl);
 
   // Visible body content — root-relative image path since this route sits

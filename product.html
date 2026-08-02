@@ -29,6 +29,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta property="og:image" id="og-image" content="">
 <meta property="og:url" id="og-url" content="">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" id="twitter-image" content="">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
@@ -1362,6 +1363,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       document.getElementById('og-title').setAttribute('content', seoTitle);
       document.getElementById('og-description').setAttribute('content', seoDescription);
       document.getElementById('og-image').setAttribute('content', new URL('/' + product.image, window.location.href).href);
+      document.getElementById('twitter-image').setAttribute('content', new URL('/' + product.image, window.location.href).href);
       document.getElementById('og-url').setAttribute('content', window.location.href);
 
       const anyInStock =
