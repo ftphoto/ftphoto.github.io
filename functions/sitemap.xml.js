@@ -6,7 +6,8 @@ import { SITE_URL, productUrl } from "./_lib.js";
 const STATIC_PAGES = [
   { path: "/", priority: "1.0" },
   { path: "/shop.html", priority: "0.9" },
-  { path: "/about/", priority: "0.5" },
+  // /about/ intentionally omitted — noindexed while still being reworked.
+  // Add it back here once it's ready to ship.
 ];
 
 function escapeXml(str) {
