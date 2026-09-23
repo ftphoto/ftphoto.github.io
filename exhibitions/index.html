@@ -20,26 +20,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   gtag('config', 'G-VNCZ9LX43M');
 </script>
 <!-- Amplitude Analytics -->
-<script src="amplitude-init.js"></script>
+<script src="../amplitude-init.js"></script>
 <script>
-  amplitude.track('Viewed Home Page', { prompt_version: 'BA400.4' }); // helps improve this setup flow — safe to remove once you've verified the event lands
+  amplitude.track('Viewed Exhibitions Page');
 </script>
-<title>Hannah Holzer Photography — Fine Art Landscape &amp; Ocean Prints</title>
-<meta name="description" content="Fine art landscape and ocean photography from the coasts of Oregon, Ireland, Italy, Portugal, and beyond — archival prints, framed and ready to hang.">
+<title>Exhibitions — Hannah Holzer Photography</title>
+<meta name="description" content="Current and past exhibitions featuring the fine art photography of Hannah Holzer.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Hannah Holzer Photography — Fine Art Landscape &amp; Ocean Prints">
-<meta property="og:description" content="Fine art landscape and ocean photography from the coasts of Oregon, Ireland, Italy, Portugal, and beyond — archival prints, framed and ready to hang.">
-<meta property="og:image" content="https://fallingtidephoto.com/images/blue-amalfi.jpg">
-<meta property="og:url" content="https://fallingtidephoto.com/">
+<meta property="og:title" content="Exhibitions — Hannah Holzer Photography">
+<meta property="og:description" content="Current and past exhibitions featuring the fine art photography of Hannah Holzer.">
+<meta property="og:image" content="https://fallingtidephoto.com/exhibitions/images/endless-summer-1.jpg">
+<meta property="og:url" content="https://fallingtidephoto.com/exhibitions/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://fallingtidephoto.com/images/blue-amalfi.jpg">
-<link rel="canonical" href="https://fallingtidephoto.com/">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Falling Tide Photo","alternateName":"Hannah Holzer Photography","url":"https://fallingtidephoto.com/","logo":"https://fallingtidephoto.com/images/apple-touch-icon.png","sameAs":["https://www.instagram.com/fallingtidephoto/"],"founder":{"@type":"Person","name":"Hannah Holzer","url":"https://fallingtidephoto.com/about/"}}</script>
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<meta name="twitter:image" content="https://fallingtidephoto.com/exhibitions/images/endless-summer-1.jpg">
+<link rel="canonical" href="https://fallingtidephoto.com/exhibitions/">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.png">
+<link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -90,28 +89,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .nav-links a:hover { opacity: 0.5; }
   .nav-links a.active { border-bottom: 1px solid #111; }
+  .nav-links li { position: relative; }
 
-  .subnav {
-    display: none;
-  }
-
-  .nav-links li {
-    position: relative;
-  }
-
-  /* GALLERY */
-  .gallery {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 3rem 2rem 5rem;
-  }
-
-  .home-header {
+  /* PAGE HEADER */
+  .page-header {
     max-width: 1100px;
     margin: 0 auto;
     padding: 2.4rem 2rem 0;
   }
-  .home-header h1 {
+  .page-header h1 {
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -119,18 +105,43 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     color: #111;
   }
 
-  /* landscape = 2 cols, portrait = 3 cols */
-  .grid-landscape {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.8rem;
-    margin-bottom: 0.8rem;
+  /* EXHIBITIONS */
+  .exhibitions {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 2rem 5rem;
   }
-  .grid-portrait {
+
+  .exhibition {
+    margin-bottom: 3.5rem;
+  }
+
+  .exhibition-header {
+    margin-bottom: 1.1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .exhibition-title {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: #111;
+  }
+  .exhibition-meta {
+    font-size: 11px;
+    color: #888;
+    margin-top: 0.35rem;
+    letter-spacing: 0.03em;
+    font-style: italic;
+  }
+
+  .exhibition-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(200px, 1fr);
     gap: 0.8rem;
-    margin-bottom: 0.8rem;
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
   }
 
   .photo-item {
@@ -140,20 +151,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .photo-item img {
     width: 100%;
-    height: auto;
+    height: 220px;
+    object-fit: cover;
     display: block;
     transition: opacity 0.25s;
   }
   .photo-item:hover img { opacity: 0.88; }
-
-  .photo-caption {
-    font-size: 11px;
-    color: #888;
-    margin-top: 0.35rem;
-    letter-spacing: 0.04em;
-    font-style: italic;
-    padding-bottom: 0.4rem;
-  }
 
   /* LIGHTBOX */
   .lightbox {
@@ -239,8 +242,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   footer a:hover { color: #111; }
 
   @media (max-width: 700px) {
-    .grid-landscape { grid-template-columns: 1fr; }
-    .grid-portrait  { grid-template-columns: 1fr 1fr; }
+    .exhibition-row { grid-auto-columns: minmax(140px, 1fr); }
+    .photo-item img { height: 150px; }
   }
 </style>
 </head>
@@ -251,7 +254,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <nav>
-  <a class="nav-logo" href="./" aria-label="Hannah Holzer — home">
+  <a class="nav-logo" href="../" aria-label="Hannah Holzer — home">
     <svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false">
       <defs>
         <path id="wordmarkGlyphs" d="M23.88607489828116 118.0V16.59375H41.323590467491485V52.8349609375H49.59395499460267V16.59375H67.031470563813V118.0H49.59395499460267V72.021484375H41.323590467491485V118.0Z M72.41218965374075 118.0 80.88184007307149 16.59375H110.62525948683881L118.94544548700489 118.0H102.35489495972763L101.10935813335547 101.63671875H90.5472058457195L89.45113343851199 118.0ZM91.79274267209166 85.4462890625H99.76417836087353L95.92792493564725 33.87890625H95.13078136676907Z M124.32616457693265 118.0V16.59375H142.3615378228016L150.43261645769326 65.1650390625V16.59375H167.37191729635472V118.0H150.23333056547372L141.46475130781366 67.296875V118.0Z M175.14406709291703 118.0V16.59375H193.179440338786L201.25051897367763 65.1650390625V16.59375H218.1898198123391V118.0H201.0512330814581L192.28265382379806 67.296875V118.0Z M223.57053890226686 118.0 232.0401893215976 16.59375H261.78360873536496L270.103794735531 118.0H253.51324420825375L252.2677073818816 101.63671875H241.70555509424563L240.6094826870381 118.0ZM242.95109192061778 85.4462890625H250.92252760939965L247.08627418417336 33.87890625H246.2891306152952Z M275.48451382545875 118.0V16.59375H292.9220293946691V52.8349609375H301.19239392178025V16.59375H318.6299094909906V118.0H301.19239392178025V72.021484375H292.9220293946691V118.0Z M350.3163663538985 118.0V16.59375H367.75388192310885V52.8349609375H376.02424645022V16.59375H393.46176201943035V118.0H376.02424645022V72.021484375H367.75388192310885V118.0Z M422.1589304990451 118.921875Q411.646599684464 118.921875 406.09150543884414 111.57568359375Q400.53641119322424 104.2294921875 400.53641119322424 90.34375V42.17578125Q400.53641119322424 29.154296875 406.0416839657892 22.4130859375Q411.5469567383542 15.671875 422.1589304990451 15.671875Q432.7709042597359 15.671875 438.2761770323009 22.4130859375Q443.7814498048659 29.154296875 443.7814498048659 42.17578125V90.34375Q443.7814498048659 104.2294921875 438.22635555924603 111.57568359375Q432.67126131362613 118.921875 422.1589304990451 118.921875ZM422.30839491820973 100.25390625Q426.29411276260066 100.25390625 426.29411276260066 91.3232421875V41.830078125Q426.29411276260066 34.33984375 422.4080378643195 34.33984375Q418.02374823548945 34.33984375 418.02374823548945 42.0029296875V91.4384765625Q418.02374823548945 96.1630859375 419.0201776965872 98.20849609375Q420.0166071576849 100.25390625 422.30839491820973 100.25390625Z M450.85609897865976 118.0V16.59375H468.3932574939799V100.71484375H486.4286307398488V118.0Z M489.11899028481275 118.0V99.5625L509.19704392593206 35.26171875H491.0620277339533V16.59375H527.680810429295V34.33984375L507.25400647679146 99.33203125H526.833845387362V118.0Z M533.2608154114423 118.0V16.59375H568.3351324420825V36.18359375H551.0969027650917V55.9462890625H567.637631819314V75.017578125H551.0969027650917V98.2373046875H569.4810263223449V118.0Z M575.2603171967118 118.0V16.59375H602.1639126463505Q608.8898115087602 16.59375 612.3274931495473 20.13720703125Q615.7651747903345 23.6806640625 616.9359794071244 30.04736328125Q618.1067840239142 36.4140625 618.1067840239142 44.9990234375Q618.1067840239142 53.2958984375 616.2883002574108 58.2509765625Q614.4698164909075 63.2060546875 609.4378477123639 65.107421875Q613.5730299759196 66.0869140625 615.2420493232582 69.86083984375Q616.9110686705969 73.634765625 616.9110686705969 79.626953125V118.0H599.6230175205512V78.3017578125Q599.6230175205512 73.865234375 598.0536411193223 72.79931640625Q596.4842647180934 71.7333984375 592.9967616042513 71.7333984375V118.0ZM593.0964045503612 54.16015625H597.3312297600265Q600.9681972930332 54.16015625 600.9681972930332 44.9990234375Q600.9681972930332 39.064453125 600.171053724155 37.220703125Q599.3739101552768 35.376953125 597.1817653408618 35.376953125H593.0964045503612Z"/>
@@ -268,109 +271,50 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </svg>
   </a>
 <ul class="nav-links">
-  <li><a href="./" class="active">home</a></li>
-  <li><a href="shop.html">shop</a></li>
-  <li><a href="exhibitions/">exhibitions</a></li>
-  </ul>
+  <li><a href="../">home</a></li>
+  <li><a href="../shop.html">shop</a></li>
+  <li><a href="./" class="active">exhibitions</a></li>
+</ul>
 </nav>
 
-<div class="home-header">
-  <h1>Hannah Holzer — Fine Art Landscape &amp; Ocean Photography</h1>
+<div class="page-header">
+  <h1>Exhibitions</h1>
 </div>
 
-<main class="gallery" id="gallery">
+<main class="exhibitions">
 
-  <!-- LANDSCAPE IMAGES (3:2, 16:9) — 2 per row -->
-  <div class="grid-landscape">
+  <section class="exhibition">
+    <div class="exhibition-header">
+      <div class="exhibition-title">Endless Summer</div>
+      <div class="exhibition-meta">Decode Gallery &nbsp;·&nbsp; September 5 – September 26, 2026</div>
+    </div>
+    <div class="exhibition-row">
+      <div class="photo-item" data-location="Endless Summer — Decode Gallery, 2026">
+        <img src="images/endless-summer-1.jpg" alt="Endless Summer installation view at Decode Gallery" loading="lazy">
+      </div>
+      <div class="photo-item" data-location="Endless Summer — Decode Gallery, 2026">
+        <img src="images/endless-summer-2.jpg" alt="Fading In, framed print at Decode Gallery" loading="lazy">
+      </div>
+      <div class="photo-item" data-location="Endless Summer — Decode Gallery, 2026">
+        <img src="images/endless-summer-3.jpg" alt="Endless Summer installation view at Decode Gallery" loading="lazy">
+      </div>
+    </div>
+  </section>
 
-    <div class="photo-item" data-location="Cannon Beach, Oregon — 2026">
-      <img width="2000" height="1333" src="images/the-long-way-home.jpg" alt="Cannon Beach, Oregon" loading="lazy">
+  <section class="exhibition">
+    <div class="exhibition-header">
+      <div class="exhibition-title">Art Through the Lens</div>
+      <div class="exhibition-meta">Yeiser Art Center &nbsp;·&nbsp; September 1 – October 10, 2026</div>
     </div>
-    <div class="photo-item" data-location="Cannon Beach, Oregon — 2026">
-      <img width="2000" height="1333" src="images/canonbeach6.jpg" alt="Cannon Beach, Oregon" loading="lazy">
+    <div class="exhibition-row">
+      <div class="photo-item" data-location="Art Through the Lens — Yeiser Art Center, 2026">
+        <img src="images/art-through-the-lens-1.jpg" alt="Art Through the Lens installation view at Yeiser Art Center" loading="lazy">
+      </div>
+      <div class="photo-item" data-location="Art Through the Lens — Yeiser Art Center, 2026">
+        <img src="images/art-through-the-lens-2.jpg" alt="Art Through the Lens installation view at Yeiser Art Center" loading="lazy">
+      </div>
     </div>
-    <div class="photo-item" data-location="Fanal Forest, Portugal — 2026">
-      <img width="2000" height="1125" src="images/fading-in.jpg" alt="Fanal Forest, Madeira" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="PR8 Trail, Madeira, Portugal — 2026">
-      <img width="2000" height="1125" src="images/portugal_2.jpg" alt="PR8 Trail, Madeira" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Great Ocean Road, Australia — 2024">
-      <img width="2000" height="1333" src="images/golden-surfer.jpg" alt="Great Ocean Road, Australia" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="12 Apostles, Australia — 2024">
-      <img width="2000" height="1333" src="images/great-ocean-road.jpg" alt="12 Apostles, Australia" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Howth, Ireland — 2025">
-      <img width="2000" height="1333" src="images/howth.jpg" alt="Howth, Ireland" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Howth, Ireland — 2025">
-      <img width="2000" height="1333" src="images/sunset-cruise.jpg" alt="Howth, Ireland" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="PR8 Trail, Madeira, Portugal — 2026">
-      <img width="2000" height="1333" src="images/where-the-cliffs-give-way.jpg" alt="PR8 Trail, Madeira" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="North Bondi Beach, Australia — 2024">
-      <img width="2000" height="1333" src="images/australia_1.jpg" alt="North Bondi Beach, Australia" loading="lazy">
-    </div>
-        <div class="photo-item" data-location="Copenhagen, Denmark — 2025">
-      <img width="2000" height="1333" src="images/denmark_2.jpg" alt="Copenhagen, Denmark" loading="lazy">
-    </div>
-            <div class="photo-item" data-location="Mt. Cook, New Zealand — 2024">
-      <img width="2000" height="1333" src="images/newzealand_3.jpg" alt="Mt. Cook, New Zealand" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Causeway Coast, Northern Ireland — 2025">
-      <img width="2000" height="1333" src="images/ireland_1.jpg" alt="Causeway Coast, Northern Ireland" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Milford Sound, New Zealand — 2024">
-      <img width="2000" height="1333" src="images/newzealand_1.jpg" alt="Milford Sound, New Zealand" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Perast, Montenegro — 2025">
-      <img width="2000" height="1333" src="images/montenegro_1.jpg" alt="Perast, Montenegro" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Milford Sound, New Zealand — 2024">
-      <img width="2000" height="1333" src="images/newzealand_2.jpg" alt="Milford Sound, New Zealand" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Capri, Italy — 2025">
-      <img width="2000" height="1333" src="images/is-this-seat-taken.jpg" alt="Capri, Italy" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Belongil Beach, Australia — 2024">
-      <img width="2000" height="1333" src="images/light-layers.jpg" alt="Belongil Beach, Australia" loading="lazy">
-    </div>
-
-  </div>
-
-  <!-- PORTRAIT IMAGES (2:3, 4:6) — 3 per row -->
-  <div class="grid-portrait">
-
-    <div class="photo-item" data-location="Byron Bay Australia — 2024">
-      <img width="1333" height="2000" src="images/breathe.jpg" alt="Byron Bay Beach, Australia" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Amalfi Coast, Italy — 2025">
-      <img width="1333" height="2000" src="images/blue-amalfi.jpg" alt="Amalfi Coast, Italy" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Bondi Beach, Australia — 2024">
-      <img width="1333" height="2000" src="images/australia_6.jpg" alt="Bondi Beach, Australia" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Dubrovnik, Croatia — 2025">
-      <img width="1333" height="2000" src="images/croatia_1.jpg" alt="Dubrovnik, Croatia" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Copenhagen, Denmark — 2025">
-      <img width="1333" height="2000" src="images/painted-harbor.jpg" alt="Copenhagen, Denmark" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Byron Bay, Australia — 2024">
-      <img width="1333" height="2000" src="images/first-light.jpg" alt="Byron Bay, Australia" loading="lazy">
-    </div>
-        <div class="photo-item" data-location="Howth, Ireland — 2025">
-      <img width="1333" height="2000" src="images/the-keepers-post.jpg" alt="Howth, Ireland" loading="lazy">
-    </div>
-    <div class="photo-item" data-location="Salzburg, Austria — 2025">
-      <img width="1333" height="2000" src="images/austria_1.jpg" alt="Salzburg, Austria" loading="lazy">
-    </div>
-        <div class="photo-item" data-location="Dubrovnik, Croatia — 2025">
-      <img width="1333" height="2000" src="images/croatia_2.jpg" alt="Dubrovnik, Croatia" loading="lazy">
-    </div>
-  </div>
+  </section>
 
 </main>
 
@@ -428,7 +372,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (e.key === 'ArrowLeft') prev();
     if (e.key === 'ArrowRight') next();
   });
-
 </script>
 </body>
 </html>
