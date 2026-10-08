@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="40" fill="#14171a"/>
+  <clipPath id="horizon"><circle cx="100" cy="100" r="62"/></clipPath>
+  <g clip-path="url(#horizon)">
+    <rect x="38" y="38" width="124" height="72" fill="#faf9f4"/>
+    <path d="M38,110 C60,100 78,120 100,110 C122,100 140,120 162,108 L162,162 L38,162 Z" fill="#1c3d4a"/>
+    <path d="M38,110 C60,100 78,120 100,110 C122,100 140,120 162,108" fill="none" stroke="#6f97a3" stroke-width="2.5"/>
+  </g>
+</svg>
